@@ -41,3 +41,4 @@ FoodSnapReview adalah aplikasi web untuk review makanan berbasis foto. Aplikasi 
 - Terdiri dari backend  sebagai fungsionalnya 
 - Frontend untuk component layout nya 
 ### Backend
+- Folder config untuk configurasi dengan database
