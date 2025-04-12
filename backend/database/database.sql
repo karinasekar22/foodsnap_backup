@@ -57,6 +57,7 @@ CREATE TABLE comment_detail (
   id SERIAL PRIMARY KEY,
   comment_id INTEGER NOT NULL,
   user_id INTEGER NOT NULL,
+  rating INTEGER DEFAULT NULL
 
   FOREIGN KEY (comment_id) REFERENCES comment(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
