@@ -76,7 +76,34 @@ Membangun API dasar untuk user, restoran, makanan, komentar, dan sistem rating b
 - `GET /api/comment/comment-details/:comment_id` → list balasan & rating
 - `GET /api/comment/comment-details/average-rating/:id` → rata-rata rating per komentar
 
+
+## 🔀 Rute Authentication
+
+- `POST /api/auth/login` → Digunakan Untuk Login  (Copy Token ) dan Tambahkan Pada Headers Authorization : Bearer  (Paste Token )
+- `POST /api/auth/register` → Digunakan Untuk Register
+- `GET /api/auth/profile` → Get Data Personal Profile
+
 ---
+
+## 🔀 Rute Item Makanan (CRUD)
+
+- `GET /api/produk/:id` → Digunakan Untuk Melihat Produk Berdasarkan Restoran 
+- `POST /api/produk/` → Digunakan Untuk Membuat Produk
+- `PUT /api/produk/:id` → Digunakan Untuk Mengupdate Data Produk 
+- `DELETE /api/produk/:id` → Digunakan Untuk Menghapus Data Produk 
+
+---
+
+
+## 🔀 Rute Restoran (CRUD)
+
+- `GET /api/restoran/:id` → Digunakan Untuk Melihat Restoran 
+- `POST /api/restoran/` → Digunakan Untuk Membuat Restoran
+- `PUT /api/restoran/:id` → Digunakan Untuk Mengupdate Data Restoran 
+- `DELETE /api/restoran/:id` → Digunakan Untuk Menghapus Data Restoran 
+
+---
+
 
 ## 📊 Estimasi Persentase Penyelesaian
 
