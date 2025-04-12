@@ -20,9 +20,13 @@ sequelize.authenticate()
   .catch(err => console.error('DB error:', err));
 
 // routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/restoran', require('./routes/restoran'));
-app.use('/api/produk', require('./routes/itemMakanan')); // kalau udah dibuat
+app.use('/api/auth', require('./routes/auth')); // Authentification
+app.use('/api/restoran', require('./routes/restoran')); // Toko/ UMKM (Resto)
+app.use('/api/produk', require('./routes/itemMakanan')); // Produk / Item
+app.use('/api/comments', require('./routes/comment')); // Comment And Review
+
+app.use('/api/comments-detail', require('./routes/commentDetail')); // Comment And Replies
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
