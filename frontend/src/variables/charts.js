@@ -1,190 +1,336 @@
-// ##############################
-// // // javascript library for creating charts
-// #############################
-var Chartist = require("chartist");
+// Daily Traffic Dashboards Default
 
-// ##############################
-// // // variables used to create animation on charts
-// #############################
-var delays = 80,
-  durations = 500;
-var delays2 = 80,
-  durations2 = 500;
-
-// ##############################
-// // // Daily Sales
-// #############################
-
-const dailySalesChart = {
-  data: {
-    labels: ["M", "T", "W", "T", "F", "S", "S"],
-    series: [[12, 17, 7, 17, 23, 18, 38]],
+export const barChartDataDailyTraffic = [
+  {
+    name: "Daily Traffic",
+    data: [20, 30, 40, 20, 45, 50, 30],
   },
-  options: {
-    lineSmooth: Chartist.Interpolation.cardinal({
-      tension: 0,
-    }),
-    low: 0,
-    high: 50, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
-    chartPadding: {
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
+];
+
+export const barChartOptionsDailyTraffic = {
+  chart: {
+    toolbar: {
+      show: false,
     },
   },
-  // for animation
-  animation: {
-    draw: function (data) {
-      if (data.type === "line" || data.type === "area") {
-        data.element.animate({
-          d: {
-            begin: 600,
-            dur: 700,
-            from: data.path
-              .clone()
-              .scale(1, 0)
-              .translate(0, data.chartRect.height())
-              .stringify(),
-            to: data.path.clone().stringify(),
-            easing: Chartist.Svg.Easing.easeOutQuint,
+  tooltip: {
+    style: {
+      fontSize: "12px",
+      fontFamily: undefined,
+    },
+    onDatasetHover: {
+      style: {
+        fontSize: "12px",
+        fontFamily: undefined,
+      },
+    },
+    theme: "dark",
+  },
+  xaxis: {
+    categories: ["00", "04", "08", "12", "14", "16", "18"],
+    show: false,
+    labels: {
+      show: true,
+      style: {
+        colors: "#A3AED0",
+        fontSize: "14px",
+        fontWeight: "500",
+      },
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+  },
+  yaxis: {
+    show: false,
+    color: "black",
+    labels: {
+      show: true,
+      style: {
+        colors: "#CBD5E0",
+        fontSize: "14px",
+      },
+    },
+  },
+  grid: {
+    show: false,
+    strokeDashArray: 5,
+    yaxis: {
+      lines: {
+        show: true,
+      },
+    },
+    xaxis: {
+      lines: {
+        show: false,
+      },
+    },
+  },
+  fill: {
+    type: "gradient",
+    gradient: {
+      type: "vertical",
+      shadeIntensity: 1,
+      opacityFrom: 0.7,
+      opacityTo: 0.9,
+      colorStops: [
+        [
+          {
+            offset: 0,
+            color: "#4318FF",
+            opacity: 1,
           },
-        });
-      } else if (data.type === "point") {
-        data.element.animate({
-          opacity: {
-            begin: (data.index + 1) * delays,
-            dur: durations,
-            from: 0,
-            to: 1,
-            easing: "ease",
+          {
+            offset: 100,
+            color: "rgba(67, 24, 255, 1)",
+            opacity: 0.28,
           },
-        });
-      }
+        ],
+      ],
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  plotOptions: {
+    bar: {
+      borderRadius: 10,
+      columnWidth: "40px",
     },
   },
 };
 
-// ##############################
-// // // Email Subscriptions
-// #############################
+// Consumption Users Reports
 
-const emailsSubscriptionChart = {
-  data: {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-    series: [[542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895]],
+export const barChartDataConsumption = [
+  {
+    name: "PRODUCT A",
+    data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
   },
-  options: {
-    axisX: {
-      showGrid: false,
-    },
-    low: 0,
-    high: 1000,
-    chartPadding: {
-      top: 0,
-      right: 5,
-      bottom: 0,
-      left: 0,
+  {
+    name: "PRODUCT B",
+    data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
+  },
+  {
+    name: "PRODUCT C",
+    data: [400, 370, 330, 390, 320, 350, 360, 320, 380],
+  },
+];
+
+export const barChartOptionsConsumption = {
+  chart: {
+    stacked: true,
+    toolbar: {
+      show: false,
     },
   },
-  responsiveOptions: [
-    [
-      "screen and (max-width: 640px)",
-      {
-        seriesBarDistance: 5,
-        axisX: {
-          labelInterpolationFnc: function (value) {
-            return value[0];
-          },
+  tooltip: {
+    style: {
+      fontSize: "12px",
+      fontFamily: undefined,
+    },
+    onDatasetHover: {
+      style: {
+        fontSize: "12px",
+        fontFamily: undefined,
+      },
+    },
+    theme: "dark",
+  },
+  xaxis: {
+    categories: ["17", "18", "19", "20", "21", "22", "23", "24", "25"],
+    show: false,
+    labels: {
+      show: true,
+      style: {
+        colors: "#A3AED0",
+        fontSize: "14px",
+        fontWeight: "500",
+      },
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+  },
+  yaxis: {
+    show: false,
+    color: "black",
+    labels: {
+      show: false,
+      style: {
+        colors: "#A3AED0",
+        fontSize: "14px",
+        fontWeight: "500",
+      },
+    },
+  },
+
+  grid: {
+    borderColor: "rgba(163, 174, 208, 0.3)",
+    show: true,
+    yaxis: {
+      lines: {
+        show: false,
+        opacity: 0.5,
+      },
+    },
+    row: {
+      opacity: 0.5,
+    },
+    xaxis: {
+      lines: {
+        show: false,
+      },
+    },
+  },
+  fill: {
+    type: "solid",
+    colors: ["#5E37FF", "#6AD2FF", "#E1E9F8"],
+  },
+  legend: {
+    show: false,
+  },
+  colors: ["#5E37FF", "#6AD2FF", "#E1E9F8"],
+  dataLabels: {
+    enabled: false,
+  },
+  plotOptions: {
+    bar: {
+      borderRadius: 10,
+      columnWidth: "20px",
+    },
+  },
+};
+
+export const pieChartOptions = {
+  labels: ["Your files", "System", "Empty"],
+  colors: ["#4318FF", "#6AD2FF", "#EFF4FB"],
+  chart: {
+    width: "50px",
+  },
+  states: {
+    hover: {
+      filter: {
+        type: "none",
+      },
+    },
+  },
+  legend: {
+    show: false,
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  hover: { mode: null },
+  plotOptions: {
+    donut: {
+      expandOnClick: false,
+      donut: {
+        labels: {
+          show: false,
         },
       },
-    ],
-  ],
-  animation: {
-    draw: function (data) {
-      if (data.type === "bar") {
-        data.element.animate({
-          opacity: {
-            begin: (data.index + 1) * delays2,
-            dur: durations2,
-            from: 0,
-            to: 1,
-            easing: "ease",
-          },
-        });
-      }
     },
+  },
+  fill: {
+    colors: ["#4318FF", "#6AD2FF", "#EFF4FB"],
+  },
+  tooltip: {
+    enabled: true,
+    theme: "dark",
   },
 };
 
-// ##############################
-// // // Completed Tasks
-// #############################
+export const pieChartData = [63, 25, 12];
 
-const completedTasksChart = {
-  data: {
-    labels: ["12am", "3pm", "6pm", "9pm", "12pm", "3am", "6am", "9am"],
-    series: [[230, 750, 450, 300, 280, 240, 200, 190]],
+// Total Spent Default
+
+export const lineChartDataTotalSpent = [
+  {
+    name: "Revenue",
+    data: [50, 64, 48, 66, 49, 68],
   },
-  options: {
-    lineSmooth: Chartist.Interpolation.cardinal({
-      tension: 0,
-    }),
-    low: 0,
-    high: 1000, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
-    chartPadding: {
-      top: 0,
-      right: 0,
-      bottom: 0,
+  {
+    name: "Profit",
+    data: [30, 40, 24, 46, 20, 46],
+  },
+];
+
+export const lineChartOptionsTotalSpent = {
+  chart: {
+    toolbar: {
+      show: false,
+    },
+    dropShadow: {
+      enabled: true,
+      top: 13,
       left: 0,
+      blur: 10,
+      opacity: 0.1,
+      color: "#4318FF",
     },
   },
-  animation: {
-    draw: function (data) {
-      if (data.type === "line" || data.type === "area") {
-        data.element.animate({
-          d: {
-            begin: 600,
-            dur: 700,
-            from: data.path
-              .clone()
-              .scale(1, 0)
-              .translate(0, data.chartRect.height())
-              .stringify(),
-            to: data.path.clone().stringify(),
-            easing: Chartist.Svg.Easing.easeOutQuint,
-          },
-        });
-      } else if (data.type === "point") {
-        data.element.animate({
-          opacity: {
-            begin: (data.index + 1) * delays,
-            dur: durations,
-            from: 0,
-            to: 1,
-            easing: "ease",
-          },
-        });
-      }
+  colors: ["#4318FF", "#39B8FF"],
+  markers: {
+    size: 0,
+    colors: "white",
+    strokeColors: "#7551FF",
+    strokeWidth: 3,
+    strokeOpacity: 0.9,
+    strokeDashArray: 0,
+    fillOpacity: 1,
+    discrete: [],
+    shape: "circle",
+    radius: 2,
+    offsetX: 0,
+    offsetY: 0,
+    showNullDataPoints: true,
+  },
+  tooltip: {
+    theme: "dark",
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    curve: "smooth",
+    type: "line",
+  },
+  xaxis: {
+    type: "numeric",
+    categories: ["SEP", "OCT", "NOV", "DEC", "JAN", "FEB"],
+    labels: {
+      style: {
+        colors: "#A3AED0",
+        fontSize: "12px",
+        fontWeight: "500",
+      },
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
     },
   },
-};
-
-module.exports = {
-  dailySalesChart,
-  emailsSubscriptionChart,
-  completedTasksChart,
+  yaxis: {
+    show: false,
+  },
+  legend: {
+    show: false,
+  },
+  grid: {
+    show: false,
+    column: {
+      color: ["#7551FF", "#39B8FF"],
+      opacity: 0.5,
+    },
+  },
+  color: ["#7551FF", "#39B8FF"],
 };
