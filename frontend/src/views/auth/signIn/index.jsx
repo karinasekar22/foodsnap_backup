@@ -1,29 +1,4 @@
-/* eslint-disable */
-/*!
-  _   _  ___  ____  ___ ________  _   _   _   _ ___   
- | | | |/ _ \|  _ \|_ _|__  / _ \| \ | | | | | |_ _| 
- | |_| | | | | |_) || |  / / | | |  \| | | | | || | 
- |  _  | |_| |  _ < | | / /| |_| | |\  | | |_| || |
- |_| |_|\___/|_| \_\___/____\___/|_| \_|  \___/|___|
-                                                                                                                                                                                                                                                                                                                                       
-=========================================================
-* Horizon UI - v1.1.0
-=========================================================
-
-* Product Page: https://www.horizon-ui.com/
-* Copyright 2023 Horizon UI (https://www.horizon-ui.com/)
-
-* Designed and Coded by Simmmple
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
-import React from "react";
-import { NavLink } from "react-router-dom";
-// Chakra imports
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -32,207 +7,230 @@ import {
   FormControl,
   FormLabel,
   Heading,
-  Icon,
+  Image,
   Input,
-  InputGroup,
-  InputRightElement,
+  Link,
   Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-// Custom components
-import { HSeparator } from "components/separator/Separator";
-import DefaultAuth from "layouts/auth/Default";
-// Assets
-import illustration from "assets/img/auth/auth.png";
-import { FcGoogle } from "react-icons/fc";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { RiEyeCloseLine } from "react-icons/ri";
+  VStack,
+  useToast,
+} from '@chakra-ui/react';
+import axios from '../../../api/axios'; // import axios
+import { NavLink, useNavigate } from 'react-router-dom';
+import logo from 'assets/img/auth/logo.png';
+import loginIllustration from 'assets/img/auth/5700472.png';
 
 function SignIn() {
-  // Chakra color mode
-  const textColor = useColorModeValue("navy.700", "white");
-  const textColorSecondary = "gray.400";
-  const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
-  const textColorBrand = useColorModeValue("brand.500", "white");
-  const brandStars = useColorModeValue("brand.500", "brand.400");
-  const googleBg = useColorModeValue("secondaryGray.300", "whiteAlpha.200");
-  const googleText = useColorModeValue("navy.700", "white");
-  const googleHover = useColorModeValue(
-    { bg: "gray.200" },
-    { bg: "whiteAlpha.300" }
-  );
-  const googleActive = useColorModeValue(
-    { bg: "secondaryGray.300" },
-    { bg: "whiteAlpha.200" }
-  );
-  const [show, setShow] = React.useState(false);
-  const handleClick = () => setShow(!show);
+  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const toast = useToast();
+  const navigate = useNavigate();
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email) {
+      toast({
+        title: 'Email tidak boleh kosong!',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      toast({
+        title: 'Silahkan cek kembali password anda!',
+        description: 'Minimal 6 karakter ya... kalau kamu lupa🤗',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post('/auth/login', {
+        email,
+        password,
+      });
+
+      const { token, user } = response.data;
+
+      // Simpan token dan user di localStorage jika Remember Me dicentang, else di sessionStorage
+    if (rememberMe) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      sessionStorage.setItem('token', token);
+      sessionStorage.setItem('user', JSON.stringify(user));
+    }
+
+      // Redirect berdasarkan role
+      if (user.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else if (user.role === 'owner') {
+        navigate('/owner/dashboard');
+      } else {
+        navigate('/customer/dashboard');
+      }
+      toast({
+        title: 'Login Success!',
+        description: `Welcome back, ${user.username}`,
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (err) {
+      console.log(err);
+      toast({
+        title: 'Login Failed',
+        description: err.response?.data?.message || 'Invalid credentials',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false); // stop loading
+    }
+  };
+
   return (
-    <DefaultAuth illustrationBackground={illustration} image={illustration}>
-      <Flex
-        maxW={{ base: "100%", md: "max-content" }}
-        w='100%'
-        mx={{ base: "auto", lg: "0px" }}
-        me='auto'
-        h='100%'
-        alignItems='start'
-        justifyContent='center'
-        mb={{ base: "30px", md: "60px" }}
-        px={{ base: "25px", md: "0px" }}
-        mt={{ base: "40px", md: "14vh" }}
-        flexDirection='column'>
-        <Box me='auto'>
-          <Heading color={textColor} fontSize='36px' mb='10px'>
-            Sign In
-          </Heading>
-          <Text
-            mb='36px'
-            ms='4px'
-            color={textColorSecondary}
-            fontWeight='400'
-            fontSize='md'>
-            Enter your email and password to sign in!
-          </Text>
-        </Box>
-        <Flex
-          zIndex='2'
-          direction='column'
-          w={{ base: "100%", md: "420px" }}
-          maxW='100%'
-          background='transparent'
-          borderRadius='15px'
-          mx={{ base: "auto", lg: "unset" }}
-          me='auto'
-          mb={{ base: "20px", md: "auto" }}>
-          <Button
-            fontSize='sm'
-            me='0px'
-            mb='26px'
-            py='15px'
-            h='50px'
-            borderRadius='16px'
-            bg={googleBg}
-            color={googleText}
-            fontWeight='500'
-            _hover={googleHover}
-            _active={googleActive}
-            _focus={googleActive}>
-            <Icon as={FcGoogle} w='20px' h='20px' me='10px' />
-            Sign in with Google
-          </Button>
-          <Flex align='center' mb='25px'>
-            <HSeparator />
-            <Text color='gray.400' mx='14px'>
-              or
+    <Flex
+      height="100vh"
+      overflowY="auto" // Menambahkan scroll jika konten lebih besar dari layar
+      direction={{ base: 'column', lg: 'row' }}
+    >
+      {/* Left Section - Illustration */}
+      <Box
+        maxW={{ base: "90%", md: "725px" }} mx="auto" width="100%"
+        flex="1"
+        bg="#23653B"
+        color="white"
+        fontFamily="Arimo"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        p={{ base: 4, lg: 12 }}
+      >
+        <VStack spacing={5} align="center" textAlign="left" marginTop={{ base: 0, lg: '5px' }}>
+          <Box mt={{ base: 4, lg: 8 }}>
+            <Heading fontSize={{ base: 'xl', lg: '3xl' }} mb={2}>
+              One snap away from your next favorite meal
+            </Heading>
+            <Text fontSize={{ base: 'sm', lg: 'xl' }}>
+              Join thousands of foodies sharing what they eat, love, and crave.
             </Text>
-            <HSeparator />
-          </Flex>
-          <FormControl>
-            <FormLabel
-              display='flex'
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
-              color={textColor}
-              mb='8px'>
-              Email<Text color={brandStars}>*</Text>
-            </FormLabel>
-            <Input
-              isRequired={true}
-              variant='auth'
-              fontSize='sm'
-              ms={{ base: "0px", md: "0px" }}
-              type='email'
-              placeholder='mail@simmmple.com'
-              mb='24px'
-              fontWeight='500'
-              size='lg'
+            <Image
+              src={loginIllustration}
+              alt="FoodSnap Illustration"
+              maxH="666px" // Memastikan gambar bisa mengisi tinggi kontainer tanpa memotong
+              width="100%" // Gambar akan menyesuaikan lebar kontainer
+              objectFit="contain" // Memastikan gambar tetap dalam proporsi tanpa terpotong
+              mt={{ base: 4, lg: 8 }}
             />
-            <FormLabel
-              ms='4px'
-              fontSize='sm'
-              fontWeight='500'
-              color={textColor}
-              display='flex'>
-              Password<Text color={brandStars}>*</Text>
-            </FormLabel>
-            <InputGroup size='md'>
+          </Box>
+        </VStack>
+      </Box>
+
+      {/* Right Section - Form */}
+      <Box
+        
+        flex="1"
+        p={{ base: 4, lg: 12 }}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        bg="white"
+        position="relative"
+      >
+        <Image
+           src={logo}
+           alt="FoodSnap Logo"
+           h={{ base: "60px", md: "100px" }} // Menyesuaikan tinggi berdasarkan ukuran layar
+           maxW="100%" // Logo akan lebar 100% dari elemen induk
+           objectFit="contain"
+           position="absolute"
+           top="1"
+           right="7"
+        />
+        <Box maxW="600px" mx="auto" width="100%">
+          <Heading fontSize="2xl" mb={2} color="green.800">
+            Good to See You Again!
+          </Heading>
+          <Text fontSize="sm" color="gray.600" mb={6}>
+            Continue your food journey with the FoodSnap community.
+          </Text>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault(); // cegah reload halaman
+              handleLogin(); // panggil fungsi login
+            }}
+          >
+            <FormControl mb={4}>
+              <FormLabel>Email Address</FormLabel>
               <Input
-                isRequired={true}
-                fontSize='sm'
-                placeholder='Min. 8 characters'
-                mb='24px'
-                size='lg'
-                type={show ? "text" : "password"}
-                variant='auth'
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <InputRightElement display='flex' alignItems='center' mt='4px'>
-                <Icon
-                  color={textColorSecondary}
-                  _hover={{ cursor: "pointer" }}
-                  as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                  onClick={handleClick}
-                />
-              </InputRightElement>
-            </InputGroup>
-            <Flex justifyContent='space-between' align='center' mb='24px'>
-              <FormControl display='flex' alignItems='center'>
-                <Checkbox
-                  id='remember-login'
-                  colorScheme='brandScheme'
-                  me='10px'
-                />
-                <FormLabel
-                  htmlFor='remember-login'
-                  mb='0'
-                  fontWeight='normal'
-                  color={textColor}
-                  fontSize='sm'>
-                  Keep me logged in
-                </FormLabel>
-              </FormControl>
-              <NavLink to='/auth/forgot-password'>
-                <Text
-                  color={textColorBrand}
-                  fontSize='sm'
-                  w='124px'
-                  fontWeight='500'>
-                  Forgot password?
-                </Text>
-              </NavLink>
+            </FormControl>
+            <FormControl mb={4}>
+              <FormLabel>Password</FormLabel>
+              <Input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormControl>
+            <Flex justify="space-between" align="center" mb={6}>
+              <Checkbox
+                colorScheme="green"
+                iconColor="white"
+                borderColor="#23653B"
+                _checked={{
+                  borderColor: '#23653B',
+                  color: 'black',
+                }}
+                isChecked={rememberMe} // Pastikan checkbox tercentang sesuai dengan state
+                onChange={() => setRememberMe(!rememberMe)} // Ubah state saat checkbox diklik
+              >
+                Remember Me
+              </Checkbox>
+              <Link
+                as={NavLink}
+                to="/auth/forgot-password"
+                fontSize="sm"
+                color="green.600"
+              >
+                Forgot Password?
+              </Link>
             </Flex>
             <Button
-              fontSize='sm'
-              variant='brand'
-              fontWeight='500'
-              w='100%'
-              h='50'
-              mb='24px'>
-              Sign In
+              type="submit"
+              isLoading={isLoading}
+              loadingText="Logging in..."
+              color="white"
+              bgColor="#23653B"
+              width="100%"
+              mb={4}
+              _hover={{ bg: '#1C4F2F' }}
+            >
+              Continue Snapping
             </Button>
-          </FormControl>
-          <Flex
-            flexDirection='column'
-            justifyContent='center'
-            alignItems='start'
-            maxW='100%'
-            mt='0px'>
-            <Text color={textColorDetails} fontWeight='400' fontSize='14px'>
-              Not registered yet?
-              <NavLink to='/auth/sign-up'>
-                <Text
-                  color={textColorBrand}
-                  as='span'
-                  ms='5px'
-                  fontWeight='500'>
-                  Create an Account
-                </Text>
-              </NavLink>
-            </Text>
-          </Flex>
-        </Flex>
-      </Flex>
-    </DefaultAuth>
+          </form>
+          <Text fontSize="sm" color="" textAlign="center">
+            Don't have an account?{' '}
+            <Link as={NavLink} to="/auth/sign-up-role" color="green.600">
+              Sign up here
+            </Link>
+          </Text>
+        </Box>
+      </Box>
+    </Flex>
   );
 }
 
