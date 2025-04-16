@@ -11,6 +11,9 @@ import {
 import initialTheme from './theme/theme'; //  { themeGreen }
 import { useState } from 'react';
 // Chakra imports
+//new import
+import ProtectedRoute from './components/protectedroute/ProtectedRoute'; //
+import Unauthorized from './pages/Unauthorized'; //
 
 export default function Main() {
   // eslint-disable-next-line
@@ -22,15 +25,21 @@ export default function Main() {
         <Route
           path="admin/*"
           element={
-            <AdminLayout theme={currentTheme} setTheme={setCurrentTheme} />
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminLayout theme={currentTheme} setTheme={setCurrentTheme} />
+            </ProtectedRoute>
           }
         />
         <Route
           path="rtl/*"
           element={
-            <RTLLayout theme={currentTheme} setTheme={setCurrentTheme} />
+            <ProtectedRoute allowedRoles={['admin']}>
+              <RTLLayout theme={currentTheme} setTheme={setCurrentTheme} />
+            </ProtectedRoute>
           }
         />
+        {/* Unauthorized page */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/" element={<Navigate to="/auth/sign-in" replace />} />
       </Routes>
     </ChakraProvider>

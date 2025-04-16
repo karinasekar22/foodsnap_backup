@@ -70,7 +70,7 @@ function SignIn() {
       // Redirect berdasarkan role
       if (user.role === 'admin') {
         navigate('/admin/dashboard');
-      } else if (user.role === 'owner') {
+      } else if (user.role === 'umkm') {
         navigate('/owner/dashboard');
       } else {
         navigate('/customer/dashboard');
