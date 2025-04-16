@@ -12,7 +12,7 @@ exports.getUserWishlist = async (req, res) => {
         model: WishlistFood,
         include: {
           model: ItemMakanan,
-          attributes: ['id', 'nama', 'foto'],
+          attributes: ['id', 'caption', 'rating'],
         }
       }
     });
@@ -36,7 +36,7 @@ exports.addToWishlist = async (req, res) => {
     let wishlist = await Wishlist.findOne({ where: { user_id: userId } });
 
     if (!wishlist) {
-      wishlist = await Wishlist.create({ user_id: userId });
+      wishlist = await Wishlist.create({ user_id: userId ,item_makanan_id :item_makanan_id});
     }
 
     // Cek apakah item sudah ada di wishlist
