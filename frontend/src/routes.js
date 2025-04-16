@@ -20,6 +20,7 @@ import RTL from 'views/admin/rtl';
 import SignInCentered from 'views/auth/signIn';
 import SignUpUMKM from 'views/auth/registerUMKM';
 import SignUpCustomer from 'views/auth/sign-up-customer';
+import SignUpRole from 'views/auth/sign-up-role';
 
 const routes = [
   {
