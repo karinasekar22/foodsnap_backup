@@ -59,6 +59,10 @@ Run in terminal this command:
 npm install
 ```
 
+```bash
+ npm install ajv@8 ajv-keywords@5
+```
+
 Then run this command to start your local server
 
 ```bash

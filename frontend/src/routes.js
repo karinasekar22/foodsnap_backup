@@ -18,11 +18,24 @@ import RTL from 'views/admin/rtl';
 
 // Auth Imports
 import SignInCentered from 'views/auth/signIn';
-import SignUpCustomer from 'views/auth/sign-up-customer';
-import SignUpRole from 'views/auth/sign-up-role';
-import SignUpUmkm from 'views/auth/sign-up-umkm';
+import SignUpUMKM from 'views/auth/registerUMKM';
 
 const routes = [
+  {
+    name: 'Sign In',
+    layout: '/auth',
+    path: '/sign-in',
+    icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
+    component: <SignInCentered />,
+  },
+  {
+    name: 'Register',
+    layout: '/auth',
+    path: '/register-umkm',
+    icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
+    component: <SignUpUMKM />,
+  },
+
   {
     name: 'Main Dashboard',
     layout: '/admin',
@@ -59,13 +72,7 @@ const routes = [
     icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
     component: <Profile />,
   },
-  {
-    name: 'Sign In',
-    layout: '/auth',
-    path: '/sign-in',
-    icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
-    component: <SignInCentered />,
-  },
+ 
   {
     name: 'Sign Up Role',
     layout: '/auth',

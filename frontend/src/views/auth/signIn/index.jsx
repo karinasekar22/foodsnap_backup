@@ -104,7 +104,7 @@ function SignIn() {
     >
       {/* Left Section - Illustration */}
       <Box
-        maxW={{ base: "90%", md: "725px" }} mx="auto" width="100%"
+        maxW={{ base: "90%", md: "600px" }} mx="auto" width="100%"
         flex="1"
         bg="#23653B"
         color="white"
@@ -125,7 +125,7 @@ function SignIn() {
             <Image
               src={loginIllustration}
               alt="FoodSnap Illustration"
-              maxH="666px" // Memastikan gambar bisa mengisi tinggi kontainer tanpa memotong
+              maxH="500px" // Memastikan gambar bisa mengisi tinggi kontainer tanpa memotong
               width="100%" // Gambar akan menyesuaikan lebar kontainer
               objectFit="contain" // Memastikan gambar tetap dalam proporsi tanpa terpotong
               mt={{ base: 4, lg: 8 }}
@@ -136,7 +136,6 @@ function SignIn() {
 
       {/* Right Section - Form */}
       <Box
-        
         flex="1"
         p={{ base: 4, lg: 12 }}
         display="flex"

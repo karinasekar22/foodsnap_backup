@@ -3,6 +3,8 @@ const cors = require('cors');
 require('dotenv').config();
 const sequelize = require('./config/database');
 const path = require('path');
+require('./models/associations');
+
 
 const app = express();
 // app.use(express.json());
@@ -26,7 +28,7 @@ app.use('/api/produk', require('./routes/itemMakanan')); // Produk / Item
 app.use('/api/comments', require('./routes/comment')); // Comment And Review
 
 app.use('/api/comments-detail', require('./routes/commentDetail')); // Comment And Replies
-
+app.use('/api/wishlist', require('./routes/wishlistRoutes'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
