@@ -19,6 +19,7 @@ import RTL from 'views/admin/rtl';
 // Auth Imports
 import SignInCentered from 'views/auth/signIn';
 import SignUpUMKM from 'views/auth/registerUMKM';
+import SignUpCustomer from 'views/auth/sign-up-customer';
 
 const routes = [
   {
@@ -92,7 +93,7 @@ const routes = [
   {
     name: 'Sign Up UMKM',
     layout: '/auth',
-    path: '/sign-up-umkm',
+    path: '/registerUMKM',
     icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
     component: <SignUpUmkm />,
   },
