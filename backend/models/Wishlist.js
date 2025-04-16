@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('./User');
+const WishlistFood = require('./WishlistFood');
 
 const Wishlist = sequelize.define('Wishlist', {
   id: {
@@ -21,6 +22,5 @@ const Wishlist = sequelize.define('Wishlist', {
   timestamps: false,
 });
 
-// Wishlist.belongsTo(User, { foreignKey: 'user_id' });
 
 module.exports = Wishlist;
