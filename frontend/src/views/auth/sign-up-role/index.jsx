@@ -12,7 +12,7 @@ const SignUpRole = () => {
       <Button colorScheme="green" onClick={() => navigate('/auth/sign-up-customer')}>
         Daftar sebagai Customer
       </Button>
-      <Button colorScheme="orange" onClick={() => navigate('/auth/sign-up-umkm')}>
+      <Button colorScheme="orange" onClick={() => navigate('/auth/registerUMKM')}>
         Daftar sebagai UMKM
       </Button>
     </VStack>
