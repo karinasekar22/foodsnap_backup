@@ -18,6 +18,9 @@ import RTL from 'views/admin/rtl';
 
 // Auth Imports
 import SignInCentered from 'views/auth/signIn';
+import SignUpCustomer from 'views/auth/sign-up-customer';
+import SignUpRole from 'views/auth/sign-up-role';
+import SignUpUmkm from 'views/auth/sign-up-umkm';
 
 const routes = [
   {
@@ -63,6 +66,30 @@ const routes = [
     icon: <Icon as={MdLock} width="20px" height="20px" color="inherit" />,
     component: <SignInCentered />,
   },
+  {
+    name: 'Sign Up Role',
+    layout: '/auth',
+    path: '/sign-up-role',
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    component: <SignUpRole />,
+  },
+
+  {
+    name: 'Sign Up Customer',
+    layout: '/auth',
+    path: '/sign-up-customer',
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    component: <SignUpCustomer />,
+  },
+
+  {
+    name: 'Sign Up UMKM',
+    layout: '/auth',
+    path: '/sign-up-umkm',
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    component: <SignUpUmkm />,
+  },
+
   {
     name: 'RTL Admin',
     layout: '/rtl',
