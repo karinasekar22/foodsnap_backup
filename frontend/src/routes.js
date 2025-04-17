@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Icon } from '@chakra-ui/react';
+import { Icon, layout } from '@chakra-ui/react';
 import {
   MdBarChart,
   MdPerson,
@@ -21,6 +21,9 @@ import SignInCentered from 'views/auth/signIn';
 import SignUpUmkm from 'views/auth/registerUMKM';
 import SignUpCustomer from 'views/auth/sign-up-customer';
 import SignUpRole from 'views/auth/sign-up-role';
+
+// User Imports
+import Homepage from 'views/user/homepage';
 
 const routes = [
   {
@@ -74,7 +77,7 @@ const routes = [
     icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
     component: <Profile />,
   },
- 
+
   {
     name: 'Sign Up Role',
     layout: '/auth',
@@ -105,6 +108,14 @@ const routes = [
     path: '/rtl-default',
     icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     component: <RTL />,
+  },
+
+  {
+    name: 'Homepage',
+    layout: '/user',
+    path: '/homepage',
+    icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
+    component: <Homepage />,
   },
 ];
 
