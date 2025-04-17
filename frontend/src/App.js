@@ -10,7 +10,7 @@ import {
 import initialTheme from './theme/theme';
 import { useState } from 'react';
 import ProtectedRoute from './components/protectedroute/ProtectedRoute';
-import Unauthorize from './pages/Unauthorize';
+import Unauthorized from './pages/Unauthorized'; 
 
 export default function Main() {
   const [currentTheme, setCurrentTheme] = useState(initialTheme);
@@ -34,17 +34,13 @@ export default function Main() {
             </ProtectedRoute>
           }
         />
-<<<<<<< HEAD
-        {/* Unauthorized page */}
-        <Route path="/unauthorized" element={<Unauthorized />} />
-=======
+        <Route path="/unauthorized" element={<Unauthorized />} /> 
         <Route
           path="user/*"
           element={
             <UserLayout theme={currentTheme} setTheme={setCurrentTheme} />
           }
         />
->>>>>>> feature/homepage
         <Route path="/" element={<Navigate to="/auth/sign-in" replace />} />
       </Routes>
     </ChakraProvider>
