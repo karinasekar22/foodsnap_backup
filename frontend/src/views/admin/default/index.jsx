@@ -37,7 +37,6 @@ import Usa from "assets/img/dashboards/usa.png";
 import MiniCalendar from "components/calendar/MiniCalendar";
 import MiniStatistics from "components/card/MiniStatistics";
 import IconBox from "components/icons/IconBox";
-import React from "react";
 import {
   MdAddTask,
   MdAttachMoney,
@@ -57,11 +56,30 @@ import {
 } from "views/admin/default/variables/columnsData";
 import tableDataCheck from "views/admin/default/variables/tableDataCheck.json";
 import tableDataComplex from "views/admin/default/variables/tableDataComplex.json";
+import React, { useEffect, useState } from 'react';
+import axiosInstance from '../../../api/axios';
 
 export default function UserReports() {
   // Chakra Color Mode
   const brandColor = useColorModeValue("brand.500", "white");
   const boxBg = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
+
+  const [loading, setLoading] = useState(true);  // Inisialisasi state loading
+
+  // useEffect diletakkan di dalam komponen, setelah state
+  useEffect(() => {
+    axiosInstance.get('/auth/admin/dashboard')
+      .then((response) => {
+        console.log('Welcome Admin:', response.data);
+        setLoading(false);  // Set loading false setelah data diterima
+      })
+      .catch((error) => {
+        console.error('Bukan admin atau token invalid:', error);
+        // Redirect ke login jika ada error
+      });
+  }, []);  // Menggunakan empty array agar useEffect hanya dijalankan sekali
+
+  if (loading) return <div>Loading...</div>;
   return (
     <Box pt={{ base: "130px", md: "80px", xl: "80px" }}>
       <SimpleGrid

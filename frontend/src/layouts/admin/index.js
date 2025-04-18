@@ -1,55 +1,24 @@
 // Chakra imports
-import { Portal, Box, useDisclosure, useToast } from '@chakra-ui/react'; // Tambahkan useToast
+import { Portal, Box, useDisclosure } from '@chakra-ui/react';
 import Footer from 'components/footer/FooterAdmin.js';
+// Layout components
 import Navbar from 'components/navbar/NavbarAdmin.js';
 import Sidebar from 'components/sidebar/Sidebar.js';
 import { SidebarContext } from 'contexts/SidebarContext';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import routes from 'routes.js';
 
+// Custom Chakra theme
 export default function Dashboard(props) {
   const { ...rest } = props;
-  const toast = useToast();  // Inisialisasi useToast
-
   // states and functions
   const [fixed] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
-
-  
-  // Layout rendering
-  document.documentElement.dir = 'ltr';
-  const { onOpen } = useDisclosure();
-
-  // Get token and user role from storage
-  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-  const userData = JSON.parse(localStorage.getItem('user')) || JSON.parse(sessionStorage.getItem('user'));
-  const role = userData?.role;
-
   // functions for changing the states from components
   const getRoute = () => {
     return window.location.pathname !== '/admin/full-screen-maps';
   };
-
-  // Cek apakah pengguna sudah login
-  if (!token) {
-    return <Navigate to="/auth/sign-in" replace />;
-  }
-
-  // Check role-based access (only 'admin' can access the admin dashboard)
-  if (role !== 'admin') {
-    // Tampilkan toast notification
-    toast({
-      title: "Akses Ditolak",
-      description: "Anda tidak memiliki izin untuk mengakses halaman ini.",
-      status: "error",
-      duration: 5000,  // The toast will last for 5 seconds
-      isClosable: true,
-    });
-
-    return <Navigate to="/unauthorized" replace />;
-  }
-
   const getActiveRoute = (routes) => {
     let activeRoute = 'Default Brand Text';
     for (let i = 0; i < routes.length; i++) {
@@ -64,15 +33,15 @@ export default function Dashboard(props) {
           return categoryActiveRoute;
         }
       } else {
-        if (window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1) {
+        if (
+          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
+        ) {
           return routes[i].name;
         }
       }
     }
     return activeRoute;
   };
-
-  // Get active navbar
   const getActiveNavbar = (routes) => {
     let activeNavbar = false;
     for (let i = 0; i < routes.length; i++) {
@@ -87,14 +56,15 @@ export default function Dashboard(props) {
           return categoryActiveNavbar;
         }
       } else {
-        if (window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1) {
+        if (
+          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
+        ) {
           return routes[i].secondary;
         }
       }
     }
     return activeNavbar;
   };
-
   const getActiveNavbarText = (routes) => {
     let activeNavbar = false;
     for (let i = 0; i < routes.length; i++) {
@@ -109,14 +79,15 @@ export default function Dashboard(props) {
           return categoryActiveNavbar;
         }
       } else {
-        if (window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1) {
+        if (
+          window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
+        ) {
           return routes[i].messageNavbar;
         }
       }
     }
     return activeNavbar;
   };
-
   const getRoutes = (routes) => {
     return routes.map((route, key) => {
       if (route.layout === '/admin') {
@@ -131,8 +102,9 @@ export default function Dashboard(props) {
       }
     });
   };
-
-
+  document.documentElement.dir = 'ltr';
+  const { onOpen } = useDisclosure();
+  document.documentElement.dir = 'ltr';
   return (
     <Box>
       <Box>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Icon, layout } from '@chakra-ui/react';
+import { Icon } from '@chakra-ui/react';
 import {
   MdBarChart,
   MdPerson,
@@ -22,8 +22,11 @@ import SignUpUmkm from 'views/auth/registerUMKM';
 import SignUpCustomer from 'views/auth/sign-up-customer';
 import SignUpRole from 'views/auth/sign-up-role';
 
+
 // User Imports
 import Homepage from 'views/user/homepage';
+import OwnerDashboard from 'views/owner/default';
+import CustomerDashboard from 'views/customer/default';
 
 const routes = [
   {
@@ -77,7 +80,7 @@ const routes = [
     icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
     component: <Profile />,
   },
-
+ 
   {
     name: 'Sign Up Role',
     layout: '/auth',
@@ -103,12 +106,29 @@ const routes = [
   },
 
   {
+    name: 'Customer Dashboard',
+    layout: '/customer',
+    path: '/default',
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    component: <CustomerDashboard />,
+  },
+
+  {
+    name: 'Owner Dashboard',
+    layout: '/customer',
+    path: '/default',
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    component: <OwnerDashboard />,
+  },
+
+
+  {
     name: 'RTL Admin',
     layout: '/rtl',
     path: '/rtl-default',
     icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     component: <RTL />,
-  },
+  }, 
 
   {
     name: 'Homepage',
