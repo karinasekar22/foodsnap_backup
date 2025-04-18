@@ -86,7 +86,7 @@ CREATE TABLE wishlist_food (
 
   FOREIGN KEY (wishlist_id) REFERENCES wishlist(id) ON DELETE CASCADE,
   FOREIGN KEY (item_makanan_id) REFERENCES item_makanan(id) ON DELETE CASCADE,
-  UNIQUE (wishlist_id, item_makanan_id) -- prevent duplicates
+  -- UNIQUE (wishlist_id, item_makanan_id) -- prevent duplicates
 );
 
 CREATE TABLE location (
