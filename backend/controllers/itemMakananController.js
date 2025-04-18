@@ -18,11 +18,28 @@ exports.searchAndFilterItems = async (req, res) => {
       whereConditions.kategori_id = kategori;
     }
 
-    // Filter berdasarkan tren (misalnya, jika trend=true maka tampilkan item yang tren)
-    if (trend) {
-      whereConditions.trend = true; // Misalnya kita memiliki kolom `trend` pada tabel item_makanan
-    }
+ // Jika filter trend=true, hitung item berdasarkan frekuensi wishlist dan urutkan berdasarkan jumlahnya
+    if (trend === 'true') {
+      // Menggunakan aggregate query untuk menghitung jumlah kemunculan item di wishlist
+      const trendingItems = await ItemMakanan.findAll({
+        where: whereConditions,
+        include: [
+          {
+            model: WishlistFood,
+            attributes: [],
+            required: true  // Join dengan WishlistFood
+          }
+        ],
+        group: ['ItemMakanan.id'], // Kelompokkan berdasarkan id ItemMakanan
+        attributes: [
+          'ItemMakanan.id',
+          'ItemMakanan.caption', // kolom lainnya yang ingin ditampilkan
+          [Sequelize.fn('COUNT', Sequelize.col('WishlistFoods.item_makanan_id')), 'trend_count']
+        ],
+        order: [[Sequelize.fn('COUNT', Sequelize.col('WishlistFoods.item_makanan_id')), 'DESC']]  // Urutkan berdasarkan tren
+      });
 
+    }
     // Filter berdasarkan kata kunci pencarian
     if (search) {
       whereConditions.caption = {

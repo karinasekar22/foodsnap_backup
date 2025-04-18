@@ -8,7 +8,7 @@ const verifyToken = require('../middleware/auth');
 router.post('/', verifyToken, uploadProduk.single('photo'), itemController.createItem);
 
 // Get Data  Berdasarkan Restoran 
-router.get('productRestoran/:restoran_id', itemController.getItemsByRestoran);
+router.get('/restoran/:restoran_id', itemController.getItemsByRestoran);
 // Endpoint untuk pencarian dan penyaringan item makanan
 router.get('/search', itemController.searchAndFilterItems);
 // Update
