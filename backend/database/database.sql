@@ -33,12 +33,12 @@ CREATE TABLE restoran (
 CREATE TABLE item_makanan (
   id SERIAL PRIMARY KEY,
   restoran_id INTEGER NOT NULL,
+  kategori_id INTEGER NOT NULL,
   photo_url TEXT,
   caption TEXT,
   rating DOUBLE PRECISION DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   is_aktif BOOLEAN DEFAULT TRUE,
-
   FOREIGN KEY (restoran_id) REFERENCES restoran(id) ON DELETE CASCADE
 );
 
@@ -70,6 +70,13 @@ CREATE TABLE wishlist (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE kategori (
+  id SERIAL PRIMARY KEY,
+  nama VARCHAR(100) NOT NULL,
+  deskripsi TEXT
 );
 
 CREATE TABLE wishlist_food (
