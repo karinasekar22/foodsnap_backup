@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Location = require('./Location');
 
 const Restoran = sequelize.define('Restoran', {
   id: {
