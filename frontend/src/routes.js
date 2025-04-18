@@ -115,7 +115,7 @@ const routes = [
 
   {
     name: 'Owner Dashboard',
-    layout: '/customer',
+    layout: '/owner',
     path: '/default',
     icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
     component: <OwnerDashboard />,

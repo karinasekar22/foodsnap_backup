@@ -68,13 +68,15 @@ function SignIn() {
     }
 
       // Redirect berdasarkan role
-      if (user.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else if (user.role === 'umkm') {
-        navigate('/owner/dashboard');
-      } else {
-        navigate('/customer/dashboard');
-      }
+      setTimeout(() => {
+        if (user.role === 'admin') {
+          navigate('/admin/default');
+        } else if (user.role === 'umkm') {
+          navigate('/owner/default');
+        } else {
+          navigate('/customer/default');
+        }
+      }, 100); 
       toast({
         title: 'Login Success!',
         description: `Welcome back, ${user.username}`,
@@ -91,7 +93,8 @@ function SignIn() {
         duration: 3000,
         isClosable: true,
       });
-    } finally {
+    } 
+    finally {
       setIsLoading(false); // stop loading
     }
   };

@@ -4,8 +4,8 @@ import AuthLayout from './layouts/auth';
 import AdminLayout from './layouts/admin';
 import RTLLayout from './layouts/rtl';
 import UserLayout from './layouts/user'; 
-import OwnerLayout from 'layouts/owner';
-import CustomerLayout from 'layouts/customer';
+import OwnerLayout from './layouts/owner';
+import CustomerLayout from './layouts/customer';
 import {
   ChakraProvider,
 } from '@chakra-ui/react';
