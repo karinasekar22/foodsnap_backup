@@ -35,6 +35,8 @@ export default function Main() {
           }
         />
         <Route path="/unauthorized" element={<Unauthorized />} /> 
+        {/* Unauthorized page */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
         <Route
           path="user/*"
           element={

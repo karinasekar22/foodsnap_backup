@@ -6,9 +6,9 @@ import Hero from './components/Hero';
 import Feature from './components/FeatureHighlights';
 import Recommendations from './components/Recommendations';
 import FeaturedReviews from './components/FeaturedReviews';
-import JoinCommunity from './components/JoinCommunity';
-import FAQ from './components/FAQ';
-import Footer from './components/Footer';
+// import JoinCommunity from './components/JoinCommunity';
+// import FAQ from './components/FAQ';
+// import Footer from './components/Footer';
 
 const Homepage = () => {
   return (
@@ -18,9 +18,9 @@ const Homepage = () => {
       <Feature />
       <Recommendations />
       <FeaturedReviews />
-      <JoinCommunity />
-      <FAQ />
-      <Footer />
+      {/* <JoinCommunity /> */}
+      {/* <FAQ /> */}
+      {/* <Footer /> */}
     </Box>
   );
 };

@@ -11,6 +11,10 @@ const ItemMakanan = sequelize.define('ItemMakanan', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  kategori_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   photo_url: {
     type: DataTypes.TEXT
   },
