@@ -32,13 +32,18 @@ const Recommendations = () => {
         maxW="1200px" 
         mx="auto"
       >
-        {/* Top Foodie Picks*/}
+        {/* Top Foodie Picks - narrower */}
         <GridItem colSpan={{ base: 16, md: 5 }} position="relative">
           <Box 
             borderRadius="lg" 
             overflow="hidden"
             height={{ base: "200px", md: "220px" }}
             position="relative"
+            _hover={{
+              '& > img': {
+                transform: 'scale(1.08)',
+              }
+            }}
           >
             <Image 
               src={topPicksImage} 
@@ -46,6 +51,7 @@ const Recommendations = () => {
               objectFit="cover"
               width="100%"
               height="100%"
+              transition="transform 0.5s ease-in-out"
             />
             <Box 
               position="absolute" 
@@ -59,7 +65,7 @@ const Recommendations = () => {
               flexDirection="column"
               justifyContent="space-between"
             >
-              <Heading size="lg" color="white">Top Foodie Picks</Heading>
+              <Heading size="lg" color="white" mt={2}>Top Foodie Picks</Heading>
               <Button 
                 as={NavLink}
                 to="/top-foodie-picks"
@@ -68,7 +74,7 @@ const Recommendations = () => {
                 width="110px"
                 height="33px"
                 borderColor="#1DA344"
-                color="white"
+                color="#1DA344"
                 bg="transparent"
                 _hover={{
                   bg: "#1DA344",
@@ -77,6 +83,7 @@ const Recommendations = () => {
                 }}
                 transition="all 0.3s ease-in-out"
                 fontFamily="Poppins, sans-serif"
+                mb={2}
               >
                 View All
               </Button>
@@ -84,13 +91,18 @@ const Recommendations = () => {
           </Box>
         </GridItem>
 
-        {/* Favorite Local Restaurants*/}
+        {/* Favorite Local Restaurants - wider rectangle */}
         <GridItem colSpan={{ base: 16, md: 11 }} position="relative">
           <Box 
             borderRadius="lg" 
             overflow="hidden"
             height={{ base: "200px", md: "220px" }}
             position="relative"
+            _hover={{
+              '& > img': {
+                transform: 'scale(1.08)',
+              }
+            }}
           >
             <Image 
               src={localRestaurantsImage} 
@@ -98,6 +110,7 @@ const Recommendations = () => {
               objectFit="cover"
               width="100%"
               height="100%"
+              transition="transform 0.5s ease-in-out"
             />
             <Box 
               position="absolute" 
@@ -111,7 +124,7 @@ const Recommendations = () => {
               flexDirection="column"
               justifyContent="space-between"
             >
-              <Heading size="lg" color="white">Favorite Local Restaurants</Heading>
+              <Heading size="lg" color="white" mt={2}>Favorite Local Restaurants</Heading>
               <Button 
                 as={NavLink}
                 to="/favorite-local-restaurants"
@@ -120,7 +133,7 @@ const Recommendations = () => {
                 width="110px"
                 height="33px"
                 borderColor="#1DA344"
-                color="white"
+                color="#1DA344"
                 bg="transparent"
                 _hover={{
                   bg: "#1DA344",
@@ -129,6 +142,7 @@ const Recommendations = () => {
                 }}
                 transition="all 0.3s ease-in-out"
                 fontFamily="Poppins, sans-serif"
+                mb={2}
               >
                 View All
               </Button>
@@ -136,13 +150,18 @@ const Recommendations = () => {
           </Box>
         </GridItem>
 
-        {/* Most Snapped Dishes */}
+        {/* Most Snapped Dishes - wider rectangle */}
         <GridItem colSpan={{ base: 16, md: 11 }} position="relative">
           <Box 
             borderRadius="lg" 
             overflow="hidden"
             height={{ base: "200px", md: "220px" }}
             position="relative"
+            _hover={{
+              '& > img': {
+                transform: 'scale(1.08)',
+              }
+            }}
           >
             <Image 
               src={mostSnappedImage} 
@@ -150,6 +169,7 @@ const Recommendations = () => {
               objectFit="cover"
               width="100%"
               height="100%"
+              transition="transform 0.5s ease-in-out"
             />
             <Box 
               position="absolute" 
@@ -163,7 +183,7 @@ const Recommendations = () => {
               flexDirection="column"
               justifyContent="space-between"
             >
-              <Heading size="lg" color="white">Most Snapped Dishes</Heading>
+              <Heading size="lg" color="white" mt={2}>Most Snapped Dishes</Heading>
               <Button 
                 as={NavLink}
                 to="/most-snapped-dishes"
@@ -172,7 +192,7 @@ const Recommendations = () => {
                 width="110px"
                 height="33px"
                 borderColor="#1DA344"
-                color="white"
+                color="#1DA344"
                 bg="transparent"
                 _hover={{
                   bg: "#1DA344",
@@ -181,6 +201,7 @@ const Recommendations = () => {
                 }}
                 transition="all 0.3s ease-in-out"
                 fontFamily="Poppins, sans-serif"
+                mb={2}
               >
                 View All
               </Button>
@@ -188,13 +209,18 @@ const Recommendations = () => {
           </Box>
         </GridItem>
 
-        {/* Trending Food Spots*/}
+        {/* Trending Food Spots - narrower */}
         <GridItem colSpan={{ base: 16, md: 5 }} position="relative">
           <Box 
             borderRadius="lg" 
             overflow="hidden"
             height={{ base: "200px", md: "220px" }}
             position="relative"
+            _hover={{
+              '& > img': {
+                transform: 'scale(1.08)',
+              }
+            }}
           >
             <Image 
               src={trendingSpotsImage} 
@@ -202,6 +228,7 @@ const Recommendations = () => {
               objectFit="cover"
               width="100%"
               height="100%"
+              transition="transform 0.5s ease-in-out"
             />
             <Box 
               position="absolute" 
@@ -215,7 +242,7 @@ const Recommendations = () => {
               flexDirection="column"
               justifyContent="space-between"
             >
-              <Heading size={{ base: "lg", md: "lg" }} color="white">
+              <Heading size="lg" color="white" mt={2}>
                 Trending<br/>Food Spots
               </Heading>
               <Button 
@@ -226,7 +253,7 @@ const Recommendations = () => {
                 width="110px"
                 height="33px"
                 borderColor="#1DA344"
-                color="white"
+                color="#1DA344"
                 bg="transparent"
                 _hover={{
                   bg: "#1DA344",
@@ -235,6 +262,7 @@ const Recommendations = () => {
                 }}
                 transition="all 0.3s ease-in-out"
                 fontFamily="Poppins, sans-serif"
+                mb={2}
               >
                 View All
               </Button>
