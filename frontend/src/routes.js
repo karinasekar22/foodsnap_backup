@@ -27,6 +27,7 @@ import SignUpRole from 'views/auth/sign-up-role';
 import Homepage from 'views/user/homepage';
 import OwnerDashboard from 'views/owner/default';
 import CustomerDashboard from 'views/customer/default';
+import ProdukDetail from 'views/customer/default/detail_page';
 
 const routes = [
   {
@@ -111,6 +112,14 @@ const routes = [
     path: '/default',
     icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
     component: <CustomerDashboard />,
+  },
+
+  {
+    name: 'Produk Detail',
+    layout: '/customer',
+    path: '/produk/:id',
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />, // Menggunakan parameter dinamis ":id"
+    component: <ProdukDetail />,
   },
 
   {

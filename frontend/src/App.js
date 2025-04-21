@@ -3,16 +3,14 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import AuthLayout from './layouts/auth';
 import AdminLayout from './layouts/admin';
 import RTLLayout from './layouts/rtl';
-import UserLayout from './layouts/user'; 
+import UserLayout from './layouts/user';
 import OwnerLayout from './layouts/owner';
 import CustomerLayout from './layouts/customer';
-import {
-  ChakraProvider,
-} from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import initialTheme from './theme/theme';
 import { useState } from 'react';
 import ProtectedRoute from './components/protectedroute/ProtectedRoute';
-import Unauthorized from './pages/Unauthorized'; 
+import Unauthorized from './pages/Unauthorized';
 
 export default function Main() {
   const [currentTheme, setCurrentTheme] = useState(initialTheme);
@@ -49,7 +47,9 @@ export default function Main() {
               <CustomerLayout theme={currentTheme} setTheme={setCurrentTheme} />
             </ProtectedRoute>
           }
-        />
+        >
+        </Route>
+
         <Route
           path="owner/*"
           element={
@@ -58,7 +58,7 @@ export default function Main() {
             </ProtectedRoute>
           }
         />
-        
+
         {/* Unauthorized page */}
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/" element={<Navigate to="/auth/sign-in" replace />} />

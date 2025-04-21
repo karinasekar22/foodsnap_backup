@@ -4,6 +4,7 @@ import { Box, Flex, Text } from '@chakra-ui/react';
 import routes from 'routes.js';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
+
 const CustomerLayout = (props) =>  {
 const { theme, setTheme, ...rest } = props;
 
