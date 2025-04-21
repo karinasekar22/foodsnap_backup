@@ -1,186 +1,208 @@
 import React, { useState, useEffect } from 'react';
-import { Flex, Text, Button, Image, Box } from '@chakra-ui/react';
+import { Flex, Text, Button, Image, Box, IconButton, Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, Stack, useDisclosure } from '@chakra-ui/react';
 import { NavLink } from 'react-router-dom';
-
+import { HamburgerIcon } from '@chakra-ui/icons';
 import logoImage from 'assets/img/homepage/logo.png';
 
-const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
+// Konstanta untuk nilai yang sering digunakan
+const COLORS = {
+  primary: '#1DA344',
+  text: 'gray.600',
+  white: 'white',
+  hoverBg: 'gray.50'
+};
 
+const SIZES = {
+  buttonWidth: '110px',
+  buttonHeight: '33px',
+  logoHeight: { base: '30px', md: '30px' }
+};
+
+// Daftar link navigasi
+const NAV_LINKS = [
+  { to: '/user/', text: 'Home' },
+  { to: '/user/discover', text: 'Discover' },
+  { to: '/user/categories', text: 'Categories' },
+  { to: '/user/add-review', text: 'Add Review' }
+];
+
+// Komponen untuk tombol login dan register
+const AuthButton = ({ to, text, isSolid, onClick }) => (
+  // Tombol untuk login atau register dengan gaya yang berbeda
+  <Button
+    as={NavLink}
+    to={to}
+    variant={isSolid ? 'solid' : 'outline'}
+    size="md"
+    width={SIZES.buttonWidth}
+    height={SIZES.buttonHeight}
+    bg={isSolid ? COLORS.primary : 'transparent'}
+    color={isSolid ? COLORS.white : COLORS.primary}
+    borderColor={COLORS.primary}
+    _hover={{
+      bg: isSolid ? COLORS.white : COLORS.primary,
+      color: isSolid ? COLORS.primary : COLORS.white,
+      border: isSolid ? `1px solid ${COLORS.primary}` : 'none'
+    }}
+    transition="all 0.3s ease-in-out"
+    fontFamily="Poppins, sans-serif"
+    onClick={onClick}
+  >
+    {text}
+  </Button>
+);
+
+// Komponen untuk item navigasi (digunakan di desktop dan mobile)
+const NavItem = ({ to, text, isMobile, onClick }) => (
+  // Item navigasi dengan efek hover dan indikator aktif
+  <NavLink
+    to={to}
+    style={{ width: isMobile ? '100%' : 'auto' }}
+    onClick={onClick}
+  >
+    {({ isActive }) => (
+      <Box
+        position="relative"
+        role="group"
+        py={isMobile ? 2 : 0}
+        px={isMobile ? 3 : 0}
+        _hover={isMobile ? { bg: COLORS.hoverBg } : {}}
+      >
+        <Text
+          color={isMobile && isActive ? COLORS.primary : COLORS.text}
+          fontFamily="Poppins, sans-serif"
+          fontWeight="bold"
+        >
+          {text}
+        </Text>
+        {!isMobile && (
+          <Box
+            position="absolute"
+            bottom="-2px"
+            left="50%"
+            width={isActive ? "60%" : "0%"}
+            height="2px"
+            bg={COLORS.primary}
+            transform="translateX(-50%)"
+            _groupHover={{ width: "60%" }}
+            transition="width 0.3s ease-in-out"
+            borderRadius="full"
+          />
+        )}
+      </Box>
+    )}
+  </NavLink>
+);
+
+const Navbar = () => {
+  // State untuk mendeteksi apakah halaman di-scroll
+  const [scrolled, setScrolled] = useState(false);
+  // Hook untuk mengontrol buka/tutup drawer (menu mobile)
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Efek untuk mendeteksi scroll dan mengubah gaya navbar
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll);
-    
-    // Cleanup function
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    // Bersihkan event listener saat komponen di-unmount
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
+    // Kontainer utama navbar dengan posisi sticky
     <Flex
       as="nav"
       align="center"
       justify="space-between"
       px={{ base: 4, md: 12 }}
       py={3}
-      bg={scrolled ? "white" : "white"}
-      boxShadow={scrolled ? "md" : "sm"}
+      bg={COLORS.white}
+      boxShadow={scrolled ? 'md' : 'sm'}
       position="sticky"
       top={0}
       zIndex={1000}
-      display="flex"
-      visibility="visible"
       fontFamily="Poppins, sans-serif"
       transition="all 0.3s ease"
     >
+      {/* Logo aplikasi */}
       <Image
         src={logoImage}
         alt="FoodSnap Logo"
-        h={{ base: '30px', md: '30px' }}
+        h={SIZES.logoHeight}
         maxW="100%"
         objectFit="contain"
         alignSelf="center"
       />
+
+      {/* Navigasi untuk desktop */}
       <Flex
         align="center"
         justify="center"
         flex={1}
         gap="25px"
+        display={{ base: 'none', md: 'flex' }}
       >
-        <NavLink to="/user/" style={({ isActive }) => ({
-          position: 'relative'
-        })}>
-          {({ isActive }) => (
-            <Box position="relative" role="group">
-              <Text color="gray.600" fontFamily="Poppins, sans-serif" fontWeight="bold">Home</Text>
-              <Box
-                position="absolute"
-                bottom="-2px"
-                left="50%"
-                width={isActive ? "60%" : "0%"}
-                height="2px"
-                bg="#1DA344"
-                transform="translateX(-50%)"
-                _groupHover={{ width: "60%" }}
-                transition="width 0.3s ease-in-out"
-                borderRadius="full"
-              />
-            </Box>
-          )}
-        </NavLink>
-        <NavLink to="/user/discover" style={({ isActive }) => ({
-          position: 'relative'
-        })}>
-          {({ isActive }) => (
-            <Box position="relative" role="group">
-              <Text color="gray.600" fontFamily="Poppins, sans-serif" fontWeight="bold">Discover</Text>
-              <Box
-                position="absolute"
-                bottom="-2px"
-                left="50%"
-                width={isActive ? "60%" : "0%"}
-                height="2px"
-                bg="#1DA344"
-                transform="translateX(-50%)"
-                _groupHover={{ width: "60%" }}
-                transition="width 0.3s ease-in-out"
-                borderRadius="full"
-              />
-            </Box>
-          )}
-        </NavLink>
-        <NavLink to="/user/categories" style={({ isActive }) => ({
-          position: 'relative'
-        })}>
-          {({ isActive }) => (
-            <Box position="relative" role="group">
-              <Text color="gray.600" fontFamily="Poppins, sans-serif" fontWeight="bold">Categories</Text>
-              <Box
-                position="absolute"
-                bottom="-2px"
-                left="50%"
-                width={isActive ? "60%" : "0%"}
-                height="2px"
-                bg="#1DA344"
-                transform="translateX(-50%)"
-                _groupHover={{ width: "60%" }}
-                transition="width 0.3s ease-in-out"
-                borderRadius="full"
-              />
-            </Box>
-          )}
-        </NavLink>
-        <NavLink to="/user/add-review" style={({ isActive }) => ({
-          position: 'relative'
-        })}>
-          {({ isActive }) => (
-            <Box position="relative" role="group">
-              <Text color="gray.600" fontFamily="Poppins, sans-serif" fontWeight="bold">Add Review</Text>
-              <Box
-                position="absolute"
-                bottom="-2px"
-                left="50%"
-                width={isActive ? "60%" : "0%"}
-                height="2px"
-                bg="#1DA344"
-                transform="translateX(-50%)"
-                _groupHover={{ width: "60%" }}
-                transition="width 0.3s ease-in-out"
-                borderRadius="full"
-              />
-            </Box>
-          )}
-        </NavLink>
+        {NAV_LINKS.map((link) => (
+          <NavItem key={link.to} to={link.to} text={link.text} />
+        ))}
       </Flex>
-      <Flex align="center" gap="20px">
-        <Button
-          as={NavLink}
-          to="/auth/sign-in"
-          variant="outline"
-          size="md"
-          width="110px"
-          height="33px"
-          borderColor="#1DA344"
-          color="#1DA344"
-          _hover={{
-            bg: "#1DA344",
-            color: "white",
-            borderColor: "#1DA344",
-          }}
-          transition="all 0.3s ease-in-out"
-          fontFamily="Poppins, sans-serif"
-        >
-          Login
-        </Button>
-        <Button
-          as={NavLink}
-          to="/auth/register-umkm"
-          variant="solid"
-          size="md"
-          width="110px"
-          height="33px"
-          bg="#1DA344"
-          color="white"
-          _hover={{
-            bg: "white",
-            color: "#1DA344",
-            border: "1px solid",
-            borderColor: "#1DA344",
-          }}
-          transition="all 0.3s ease-in-out"
-          fontFamily="Poppins, sans-serif"
-        >
-          Get Started
-        </Button>
+
+      {/* Tombol login dan register untuk desktop */}
+      <Flex
+        align="center"
+        gap="20px"
+        display={{ base: 'none', md: 'flex' }}
+      >
+        <AuthButton to="/auth/sign-in" text="Login" />
+        <AuthButton to="/auth/register-umkm" text="Get Started" isSolid />
       </Flex>
+
+      {/* Tombol menu hamburger untuk mobile */}
+      <IconButton
+        aria-label="Buka menu"
+        icon={<HamburgerIcon />}
+        display={{ base: 'flex', md: 'none' }}
+        onClick={onOpen}
+        variant="ghost"
+        color={COLORS.text}
+      />
+
+      {/* Drawer untuk menu mobile */}
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerBody pt={10}>
+            <Stack spacing={4}>
+              {NAV_LINKS.map((link) => (
+                <NavItem
+                  key={link.to}
+                  to={link.to}
+                  text={link.text}
+                  isMobile
+                  onClick={onClose}
+                />
+              ))}
+              <Box pt={5}>
+                <AuthButton
+                  to="/auth/sign-in"
+                  text="Login"
+                  onClick={onClose}
+                />
+                <AuthButton
+                  to="/auth/register-umkm"
+                  text="Get Started"
+                  isSolid
+                  onClick={onClose}
+                />
+              </Box>
+            </Stack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Flex>
   );
 };
