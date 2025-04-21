@@ -7,14 +7,9 @@ import {
   Input,
   Select,
   VStack,
-  Stack,
-  Center,
-  Icon,
-  Text,
   InputGroup,
   InputLeftElement,
 } from '@chakra-ui/react';
-import { FaCamera, FaMapMarkerAlt, FaUsers, FaMobileAlt } from 'react-icons/fa';
 import { ChevronDownIcon, SearchIcon } from '@chakra-ui/icons';
 
 import heroImage from 'assets/img/homepage/background.png';
@@ -25,7 +20,7 @@ const Hero = () => {
       bgImage={heroImage}
       bgSize="cover"
       bgPosition="center"
-      h={{ base: '70vh', md: '80vh' }}
+      h={{ base: '60vh', sm: '70vh', md: '80vh' }}
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -41,36 +36,51 @@ const Hero = () => {
         bottom="0"
         bg="rgba(0, 0, 0, 0.5)"
       />
-      <VStack spacing={6} zIndex={1}>
+      <VStack spacing={{ base: 4, md: 6 }} zIndex={1} px={{ base: 4, md: 0 }}>
         <Heading
-          fontSize={{ base: '3xl', md: '5xl' }}
+          fontSize={{ base: '2xl', sm: '3xl', md: '5xl' }}
           fontFamily="Arimo, sans-serif"
           textAlign="center"
+          lineHeight={{ base: "1.4", md: "1.2" }}
         >
           <Box as="span" fontWeight="bold" letterSpacing="0.1em">
             FoodSnap
           </Box>
           <br />
-          <Box as="span" fontWeight="300" fontSize={{ base: '2xl', md: '4xl' }}>
+          <Box 
+            as="span" 
+            fontWeight="300" 
+            fontSize={{ base: 'xl', sm: '2xl', md: '4xl' }}
+            display="inline-block"
+            mt={{ base: 2, md: 3 }}
+          >
             Take a snap & review your favorite meals!
           </Box>
         </Heading>
+        
+        {/* Search Bar Container */}
         <Flex
-          w={{ base: '90%', md: '600px' }}
+          direction={{ base: "column", md: "row" }}
+          w={{ base: '100%', md: '600px' }}
           bg="white"
           borderRadius="7px"
           boxShadow="md"
-          p={1}
+          p={{ base: 2, md: 1 }}
           align="center"
         >
+          {/* Location Selector */}
           <Box
             px={2}
-            borderRight="1px"
+            borderRight={{ base: "none", md: "1px" }}
+            borderBottom={{ base: "1px", md: "none" }}
             borderColor="gray.200"
             color="gray.700"
-            h="40px"
+            h={{ base: "40px", md: "40px" }}
             display="flex"
             alignItems="center"
+            justifyContent={{ base: "center", md: "flex-start" }}
+            w={{ base: "100%", md: "auto" }}
+            mb={{ base: 1, md: 0 }}
           >
             <Box as="span" color="green.500" mr={1}>
               <svg
@@ -87,9 +97,10 @@ const Hero = () => {
               variant="unstyled"
               defaultValue="Bandung"
               icon={<ChevronDownIcon />}
-              width="110px"
+              width={{ base: "110px", md: "110px" }}
               fontSize="md"
               fontWeight="medium"
+              textAlign={{ base: "center", md: "left" }}
             >
               <option value="Bandung">Bandung</option>
               <option value="Jakarta">Jakarta</option>
@@ -97,23 +108,35 @@ const Hero = () => {
             </Select>
           </Box>
 
-          <InputGroup flex={1}>
-            {/* <InputLeftElement pointerEvents="none" pl={3}>
-              <SearchIcon color="gray.400" />
-            </InputLeftElement> */}
-            <Input
-              pl={10}
-              placeholder="What's on your craving list today?"
-              border="none"
-              color="gray.600"
-              _focus={{ outline: 'none' }}
-              _placeholder={{ color: 'gray.400' }}
-            />
-          </InputGroup>
+          {/* Search Input and Button */}
+          <Flex 
+            flex={1} 
+            w={{ base: "100%", md: "auto" }}
+            direction={{ base: "row", md: "row" }}
+          >
+            <InputGroup flex={1}>
+              <Input
+                pl={{ base: 3, md: 10 }}
+                placeholder="What's on your craving list today?"
+                border="none"
+                color="gray.600"
+                _focus={{ outline: 'none' }}
+                _placeholder={{ color: 'gray.400', fontSize: { base: "sm", md: "md" } }}
+                h="40px"
+              />
+            </InputGroup>
 
-          <Button colorScheme="white" size="md" borderRadius="7px" mx={1} p={3}>
-            <SearchIcon color="green" />
-          </Button>
+            <Button 
+              colorScheme="white" 
+              size="md" 
+              borderRadius="7px" 
+              mx={1} 
+              p={3}
+              minW={{ base: "40px", md: "40px" }}
+            >
+              <SearchIcon color="green" />
+            </Button>
+          </Flex>
         </Flex>
       </VStack>
     </Box>
