@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+
 import {
   Box,
   Button,
@@ -10,26 +11,36 @@ import {
   HStack,
   IconButton,
 } from '@chakra-ui/react';
-import { ChevronRightIcon } from '@chakra-ui/icons';
-import { NavLink } from 'react-router-dom';
+import { ChevronRightIcon, StarIcon } from '@chakra-ui/icons';
+import { NavLink, useLocation } from 'react-router-dom';
 import axios from '../../../../api/axios';
 
 const FeaturedReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [filter, setFilter] = useState('Discover');
+  const [limitedView, setLimitedView] = useState(true); // default: hanya 3 review
   const scrollRef = useRef(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    // deteksi kalau sudah masuk halaman discover
+    if (location.pathname === '/user/discover') {
+      setLimitedView(false); // tampilkan semua review
+    }
+  }, [location]);
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get('/reviews', { params: { filter } });
-        setReviews(response.data);
+        const response = await axios.get('/comments', { params: { filter } });
+        const allReviews = response.data;
+        setReviews(limitedView ? allReviews.slice(0, 3) : allReviews);
       } catch (err) {
         console.error('Failed to fetch reviews:', err);
       }
     };
     fetchReviews();
-  }, [filter]);
+  }, [filter, limitedView]);
 
   const scrollRight = () => {
     if (scrollRef.current) {
@@ -48,8 +59,7 @@ const FeaturedReviews = () => {
       <Text>
         See what fellow foodies are saying about their favorite dishes.
         <br />
-        Discover real reviews, trusted ratings, and delicious stories shared by
-        our community.
+        Discover real reviews, trusted ratings, and delicious stories shared by our community.
       </Text>
 
       <Flex align="center" w="100%" position="relative" mt={10} mb={8}>
@@ -66,13 +76,7 @@ const FeaturedReviews = () => {
           flex="1"
         >
           <HStack spacing={4}>
-            {[
-              'Discover',
-              'Trending Now',
-              'Top Rated',
-              'Most Snapped',
-              'Newest Post',
-            ].map((f) => (
+            {['Discover', 'Trending Now', 'Top Rated', 'Most Snapped', 'Newest Post'].map((f) => (
               <Button
                 key={f}
                 variant={filter === f ? 'solid' : 'outline'}
@@ -109,10 +113,21 @@ const FeaturedReviews = () => {
         {reviews.map((review) => (
           <Box key={review.id} bg="white" borderRadius="md" p={4}>
             <Image src={review.image} borderRadius="md" mb={4} />
-            <Text fontWeight="bold">{review.name}</Text>
-            <Text color="yellow.500">★★★★★ {review.rating}</Text>
+            <Text fontWeight="bold">{review.User.username}</Text>
+            {/* <Text color="yellow.500">★★★★★ {review.ItemMakanan.rating}</Text> */}
+            <HStack spacing={1}>
+              {[...Array(5)].map((_, i) => (
+                <StarIcon
+                  key={i}
+                  color={i < Math.floor(review.ItemMakanan.rating) ? 'yellow.400' : 'gray.300'}
+                />
+              ))}
+              <Text fontSize="sm" color="gray.600">
+                ({review.ItemMakanan.rating})
+              </Text>
+            </HStack>
             <Text color="gray.600" noOfLines={2}>
-              {review.description}
+              {review.content}
             </Text>
             <Button variant="link" colorScheme="green" mt={2}>
               Read All
@@ -121,29 +136,31 @@ const FeaturedReviews = () => {
         ))}
       </SimpleGrid>
 
-      <Flex justifyContent="center" width="100%" mt={8}>
-        <Button
-          as={NavLink}
-          to="/user/discover"
-          variant="outline"
-          borderRadius="full"
-          borderColor="#1DA344"
-          color="#1DA344"
-          px={8}
-          py={2}
-          width="220px"
-          rightIcon={<Text as="span" ml={1}>»</Text>}
-          _hover={{
-            bg: "#1DA344",
-            color: "white",
-            borderColor: "#1DA344",
-          }}
-          transition="all 0.3s ease-in-out"
-          fontFamily="Poppins, sans-serif"
-        >
-          Discover More
-        </Button>
-      </Flex>
+      {limitedView && (
+        <Flex justifyContent="center" width="100%" mt={8}>
+          <Button
+            as={NavLink}
+            to="/user/discover"
+            variant="outline"
+            borderRadius="full"
+            borderColor="#1DA344"
+            color="#1DA344"
+            px={8}
+            py={2}
+            width="220px"
+            rightIcon={<Text as="span" ml={1}>»</Text>}
+            _hover={{
+              bg: "#1DA344",
+              color: "white",
+              borderColor: "#1DA344",
+            }}
+            transition="all 0.3s ease-in-out"
+            fontFamily="Poppins, sans-serif"
+          >
+            Discover More
+          </Button>
+        </Flex>
+      )}
     </Box>
   );
 };

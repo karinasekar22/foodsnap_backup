@@ -6,6 +6,8 @@ const Location = require('./Location');
 const Restoran = require('./Restoran');
 const Kategori = require('./kategori');
 const LocationRestaurant = require('./LocationRestaurant');
+const Comment = require('./Comment');
+const CommentDetail = require('./CommentDetail');
 
 // Relasi Wishlist → WishlistFood
 Wishlist.hasMany(WishlistFood, { foreignKey: 'wishlist_id' });
@@ -41,3 +43,25 @@ ItemMakanan.belongsTo(Restoran, { foreignKey: 'restoran_id' });
 // Relasi ItemMakanan → Kategori
 ItemMakanan.belongsTo(Kategori, { foreignKey: 'kategori_id' });
 Kategori.hasMany(ItemMakanan, { foreignKey: 'kategori_id' });
+
+// Relasi: Comment dimiliki oleh User
+Comment.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(Comment, { foreignKey: 'user_id' });
+
+// Relasi: Comment berhubungan dengan ItemMakanan
+ItemMakanan.belongsTo(Kategori, { foreignKey: 'kategori_id' });
+
+Comment.belongsTo(ItemMakanan, { foreignKey: 'item_makanan_id' });
+
+ItemMakanan.hasMany(Comment, { foreignKey: 'item_makanan_id' });
+
+// 🔥 Relasi: Comment → CommentDetail (1:N)
+Comment.hasMany(CommentDetail, { foreignKey: 'comment_id', as: 'CommentDetails' });
+CommentDetail.belongsTo(Comment, { foreignKey: 'comment_id' });
+
+// Relasi: CommentDetail dimiliki oleh User
+CommentDetail.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(CommentDetail, { foreignKey: 'user_id' });
+
+
+

@@ -6,8 +6,15 @@ import logoImage from 'assets/img/homepage/logo.png';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
   useEffect(() => {
+    const userSession = sessionStorage.getItem('user');
+    if (userSession) {
+      const parsedUser = JSON.parse(userSession);
+      setLoggedInUser(parsedUser);
+    }
+
     const handleScroll = () => {
       if (window.scrollY > 20) {
         setScrolled(true);
@@ -17,7 +24,7 @@ const Navbar = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    
+
     // Cleanup function
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -140,47 +147,74 @@ const Navbar = () => {
           )}
         </NavLink>
       </Flex>
+
+
       <Flex align="center" gap="20px">
-        <Button
-          as={NavLink}
-          to="/auth/sign-in"
-          variant="outline"
-          size="md"
-          width="110px"
-          height="33px"
-          borderColor="#1DA344"
-          color="#1DA344"
-          _hover={{
-            bg: "#1DA344",
-            color: "white",
-            borderColor: "#1DA344",
-          }}
-          transition="all 0.3s ease-in-out"
-          fontFamily="Poppins, sans-serif"
-        >
-          Login
-        </Button>
-        <Button
-          as={NavLink}
-          to="/auth/register-umkm"
-          variant="solid"
-          size="md"
-          width="110px"
-          height="33px"
-          bg="#1DA344"
-          color="white"
-          _hover={{
-            bg: "white",
-            color: "#1DA344",
-            border: "1px solid",
-            borderColor: "#1DA344",
-          }}
-          transition="all 0.3s ease-in-out"
-          fontFamily="Poppins, sans-serif"
-        >
-          Get Started
-        </Button>
+        {loggedInUser ? (
+          <Button
+            variant="solid"
+            size="md"
+            width="150px"
+            height="33px"
+            bg="#1DA344"
+            color="white"
+            _hover={{
+              bg: "white",
+              color: "#1DA344",
+              border: "1px solid",
+              borderColor: "#1DA344",
+            }}
+            transition="all 0.3s ease-in-out"
+            fontFamily="Poppins, sans-serif"
+          >
+            {loggedInUser.username}
+          </Button>
+        ) : (
+          <>
+            <Button
+              as={NavLink}
+              to="/auth/sign-in"
+              variant="outline"
+              size="md"
+              width="110px"
+              height="33px"
+              borderColor="#1DA344"
+              color="#1DA344"
+              _hover={{
+                bg: "#1DA344",
+                color: "white",
+                borderColor: "#1DA344",
+              }}
+              transition="all 0.3s ease-in-out"
+              fontFamily="Poppins, sans-serif"
+            >
+              Login
+            </Button>
+            <Button
+              as={NavLink}
+              to="/auth/register-umkm"
+              variant="solid"
+              size="md"
+              width="110px"
+              height="33px"
+              bg="#1DA344"
+              color="white"
+              _hover={{
+                bg: "white",
+                color: "#1DA344",
+                border: "1px solid",
+                borderColor: "#1DA344",
+              }}
+              transition="all 0.3s ease-in-out"
+              fontFamily="Poppins, sans-serif"
+            >
+              Get Started
+            </Button>
+          </>
+        )}
       </Flex>
+
+
     </Flex>
   );
 };

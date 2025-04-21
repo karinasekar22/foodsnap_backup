@@ -2,6 +2,8 @@ const Comment = require('../models/Comment');
 const ItemMakanan = require('../models/ItemMakanan');
 const User = require('../models/User');
 const CommentDetail = require('../models/CommentDetail');
+const sequelize = require('../config/database');
+const Kategori = require('../models/kategori');
 
 
 /**
@@ -9,63 +11,140 @@ const CommentDetail = require('../models/CommentDetail');
  * - Body: { item_makanan_id, content, user_id }
  */
 exports.createComment = async (req, res) => {
-    try {
-      const { item_makanan_id, content, rating } = req.body;
-      const user_id = req.user.id;
-  
-      // Pastikan item makanan ada
-      const item = await ItemMakanan.findByPk(item_makanan_id);
-      if (!item) {
-        return res.status(404).json({ message: 'Item makanan tidak ditemukan' });
-      }
-  
-      // Simpan komentar utama
-      const comment = await Comment.create({
-        user_id,
-        item_makanan_id,
-        content
-      });
-  
-      // Simpan detail rating jika ada
-      let detail = null;
-      if (rating) {
-        detail = await CommentDetail.create({
-          comment_id: comment.id,
-          user_id,
-          rating
-        });
-      }
-  
-      res.status(201).json({
-        message: 'Komentar berhasil ditambahkan',
-        comment,
-        rating_detail: detail
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Gagal menambahkan komentar' });
+  try {
+    const { item_makanan_id, content, rating } = req.body;
+    const user_id = req.user.id;
+
+    // Pastikan item makanan ada
+    const item = await ItemMakanan.findByPk(item_makanan_id);
+    if (!item) {
+      return res.status(404).json({ message: 'Item makanan tidak ditemukan' });
     }
-  };
-  
+
+    // Simpan komentar utama
+    const comment = await Comment.create({
+      user_id,
+      item_makanan_id,
+      content
+    });
+
+    // Simpan detail rating jika ada
+    let detail = null;
+    if (rating) {
+      detail = await CommentDetail.create({
+        comment_id: comment.id,
+        user_id,
+        rating
+      });
+    }
+
+    res.status(201).json({
+      message: 'Komentar berhasil ditambahkan',
+      comment,
+      rating_detail: detail
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Gagal menambahkan komentar' });
+  }
+};
+
 
 /**
  * [GET] Ambil semua komentar
  */
+// exports.getAllComments = async (req, res) => {
+//   try {
+//     const comments = await Comment.findAll({
+//       include: [
+//         {
+//           model: User,
+//           attributes: ['id', 'username', 'email']
+//         },
+//         {
+//           model: ItemMakanan,
+//           attributes: ['id', 'caption', 'rating']
+//         }
+//       ],
+//       order: [['created_at', 'DESC']]
+//     });
+
+//     res.json(comments);
+//   } catch (error) {
+//     console.log("Message Error ", error);
+//     res.status(500).json({ message: 'Gagal mengambil komentar' });
+//   }
+// };
+
+
 exports.getAllComments = async (req, res) => {
+  const { filter } = req.query;
+
   try {
-    const comments = await Comment.findAll({
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'username', 'email']
+    let comments;
+
+    if (filter === 'Trending Now') {
+      // Join ke CommentDetail untuk menghitung jumlah balasan
+      comments = await Comment.findAll({
+        attributes: {
+          include: [
+            [
+              // Gunakan Sequelize untuk menghitung jumlah comment detail
+              sequelize.fn('COUNT', Sequelize.col('CommentDetails.id')),
+              'replyCount',
+            ],
+          ],
         },
-        {
-          model: ItemMakanan,
-          attributes: ['id', 'caption', 'rating']
-        }
-      ],
-      order: [['created_at', 'DESC']]
-    });
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'username', 'email']
+          },
+          {
+            model: ItemMakanan,
+            attributes: ['id', 'caption', 'rating', 'photo_url', 'kategori_id'],
+            include: [
+              {
+                model: Kategori,
+                attributes: ['id', 'nama']
+              }
+            ]
+          },
+          {
+            model: CommentDetail,
+            attributes: [], // kita tidak butuh data detail, hanya jumlahnya
+          }
+        ],
+        group: ['Comment.id', 'User.id', 'ItemMakanan.id'], // penting untuk group by
+        order: [[Sequelize.literal('replyCount'), 'DESC']],
+      });
+    } else {
+      // Filter lain seperti biasa
+      let order = [['created_at', 'DESC']];
+      if (filter === 'Top Rated') {
+        order = [[{ model: ItemMakanan }, 'rating', 'DESC']];
+      }
+
+      comments = await Comment.findAll({
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'username', 'email']
+          },
+          {
+            model: ItemMakanan,
+            attributes: ['id', 'caption', 'rating', 'photo_url', 'kategori_id'],
+            include: [
+              {
+                model: Kategori,
+                attributes: ['id', 'nama']
+              }
+            ]
+          },
+        ],
+        order: order
+      });
+    }
 
     res.json(comments);
   } catch (error) {
@@ -73,7 +152,6 @@ exports.getAllComments = async (req, res) => {
     res.status(500).json({ message: 'Gagal mengambil komentar' });
   }
 };
-
 /**
  * [GET] Ambil komentar berdasarkan ID
  */
@@ -84,13 +162,13 @@ exports.getCommentById = async (req, res) => {
     const comment = await Comment.findByPk(id, {
       include: [
         {
-            model: User,
-            attributes: ['id', 'username', 'email']
-          },
-          {
-            model: ItemMakanan,
-            attributes: ['id', 'caption', 'rating']
-          }
+          model: User,
+          attributes: ['id', 'username', 'email']
+        },
+        {
+          model: ItemMakanan,
+          attributes: ['id', 'caption', 'rating']
+        }
       ]
     });
 
