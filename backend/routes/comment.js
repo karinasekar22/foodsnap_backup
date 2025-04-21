@@ -3,6 +3,9 @@ const router = express.Router();
 const commentController = require('../controllers/commentController');
 const verifyToken = require('../middleware/auth');
 
+
+router.get('/food-comment/:id', verifyToken, commentController.getKomentarByItemId);
+
 /**
  * [POST] Buat komentar pertama kali
  * - Body: { item_makanan_id, comment_text }

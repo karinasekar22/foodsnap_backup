@@ -24,4 +24,10 @@ router.get('/umkm/dashboard', verifyToken, checkRole('umkm'), (req, res) => {
   res.json({ message: 'Selamat datang UMKM, ayo kelola tokomu!' });
 });
 
+// ⛔ Akses khusus: hanya UMKM
+router.get('/customer/dashboard', verifyToken, checkRole('customer'), (req, res) => {
+  res.json({ message: 'Selamat datang Beb, ayo cari makanan fav mu!' });
+});
+
+
 module.exports = router;

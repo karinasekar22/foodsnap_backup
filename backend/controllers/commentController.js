@@ -103,3 +103,38 @@ exports.getCommentById = async (req, res) => {
     res.status(500).json({ message: 'Gagal mengambil komentar' });
   }
 };
+
+
+exports.getKomentarByItemId = async (req, res) => {
+  const { id } = req.params; // id = item_makanan_id
+
+  // Validasi ID
+  if (!Number(id)) {
+    return res.status(400).json({ message: 'ID item makanan tidak valid' });
+  }
+
+  try {
+    const komentar = await Comment.findAll({
+      where: { item_makanan_id: id },
+      order: [['created_at', 'DESC']],
+      include: {
+        model: User, // kalau ingin tampil nama user juga
+        attributes: ['username']
+      }
+    });
+
+    if (komentar.length === 0) {
+      return res.status(404).json({ message: 'Komentar tidak ditemukan untuk item ini' });
+    }
+
+    res.status(200).json({
+      message: 'Komentar berhasil diambil',
+      data: komentar,
+      total_komentar: komentar.length,
+    });
+  } catch (err) {
+    console.error('Gagal mengambil komentar:', err);
+    res.status(500).json({ message: 'Gagal mengambil komentar' });
+  }
+};
+

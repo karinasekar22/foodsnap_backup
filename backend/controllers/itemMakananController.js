@@ -129,3 +129,53 @@ exports.deleteItem = async (req, res) => {
     res.status(500).json({ message: 'Gagal menghapus item' });
   }
 };
+
+// Di controller ItemMakananController.js
+exports.getAllItem = async (req, res) => {
+  try {
+    // Tidak ada filter berdasarkan kategori atau lokasi
+    const items = await ItemMakanan.findAll();
+
+    // Cek jika tidak ada item
+    if (items.length === 0) {
+      return res.status(404).json({ message: "Tidak ada item ditemukan" });
+    }
+
+    res.json(items);
+  } catch (err) {
+    console.error("Error:", err); // Menampilkan error
+    res.status(500).json({ message: "Gagal mengambil item" });
+  }
+};
+
+exports.getMakananById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const item = await ItemMakanan.findByPk(id, {
+      include: [
+        {
+          model: Restoran,
+          attributes: ['restaurant_name', 'banner_url'], // ambil hanya field yang dibutuhkan
+        },
+        {
+          model: Kategori, // pastikan ini udah di-associate
+          attributes: ['nama'],
+        },
+      ],
+    });
+
+    if (!item) {
+      return res.status(404).json({ message: 'Item tidak ditemukan' });
+    }
+
+    res.status(200).json(item);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Gagal mengambil data item' });
+  }
+};
+
+
+
+

@@ -17,5 +17,12 @@ router.put('/:id', verifyToken, uploadProduk.single('photo'), itemController.upd
 // Delete
 router.delete('/:id', verifyToken, itemController.deleteItem);
 
+router.get('/item-makanan/:id', itemController.getMakananById);
+
+router.get('/item-makanan', itemController.getAllItem);
+
+
+
+
 
 module.exports = router;
