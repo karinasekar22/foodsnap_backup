@@ -239,7 +239,7 @@ function SignUpCustomer() {
           </form>
           <Text fontSize="sm" textAlign="center">
             Want to register your food business instead?{' '}
-            <Link as={NavLink} to="/auth/sign-up-umkm" color="green.600">
+            <Link as={NavLink} to="/auth/registerUMKM" color="green.600">
               Sign up as a Business Owner
             </Link>
           </Text>
