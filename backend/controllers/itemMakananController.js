@@ -99,6 +99,17 @@ exports.getItemsByRestoran = async (req, res) => {
   }
 };
 
+exports.getAllItems = async (req, res) => {
+  try {
+    const items = await ItemMakanan.findAll();
+    res.json(items);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Gagal mengambil semua item makanan' });
+  }
+};
+
+
 exports.updateItem = async (req, res) => {
   try {
     const { id } = req.params;

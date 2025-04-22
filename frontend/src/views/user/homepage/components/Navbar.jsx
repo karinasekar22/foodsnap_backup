@@ -28,7 +28,6 @@ const NAV_LINKS = [
 
 // Komponen untuk tombol login dan register
 const AuthButton = ({ to, text, isSolid, onClick }) => (
-  // Tombol untuk login atau register dengan gaya yang berbeda
   <Button
     as={NavLink}
     to={to}
@@ -54,7 +53,6 @@ const AuthButton = ({ to, text, isSolid, onClick }) => (
 
 // Komponen untuk item navigasi (digunakan di desktop dan mobile)
 const NavItem = ({ to, text, isMobile, onClick }) => (
-  // Item navigasi dengan efek hover dan indikator aktif
   <NavLink
     to={to}
     style={{ width: isMobile ? '100%' : 'auto' }}
@@ -95,24 +93,30 @@ const NavItem = ({ to, text, isMobile, onClick }) => (
 );
 
 const Navbar = () => {
-  // State untuk mendeteksi apakah halaman di-scroll
   const [scrolled, setScrolled] = useState(false);
-  // Hook untuk mengontrol buka/tutup drawer (menu mobile)
+  const [loggedInUser, setLoggedInUser] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Efek untuk mendeteksi scroll dan mengubah gaya navbar
   useEffect(() => {
+    const userSession = sessionStorage.getItem('user');
+    if (userSession) {
+      const parsedUser = JSON.parse(userSession);
+      setLoggedInUser(parsedUser);
+    }
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll);
-    // Bersihkan event listener saat komponen di-unmount
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (
-    // Kontainer utama navbar dengan posisi sticky
     <Flex
       as="nav"
       align="center"
@@ -127,7 +131,6 @@ const Navbar = () => {
       fontFamily="Poppins, sans-serif"
       transition="all 0.3s ease"
     >
-      {/* Logo aplikasi */}
       <Image
         src={logoImage}
         alt="FoodSnap Logo"
@@ -137,7 +140,6 @@ const Navbar = () => {
         alignSelf="center"
       />
 
-      {/* Navigasi untuk desktop */}
       <Flex
         align="center"
         justify="center"
@@ -150,17 +152,38 @@ const Navbar = () => {
         ))}
       </Flex>
 
-      {/* Tombol login dan register untuk desktop */}
       <Flex
         align="center"
         gap="20px"
         display={{ base: 'none', md: 'flex' }}
       >
-        <AuthButton to="/auth/sign-in" text="Login" />
-        <AuthButton to="/auth/register-umkm" text="Get Started" isSolid />
+        {loggedInUser ? (
+          <Button
+            variant="solid"
+            size="md"
+            width="150px"
+            height="33px"
+            bg={COLORS.primary}
+            color={COLORS.white}
+            _hover={{
+              bg: COLORS.white,
+              color: COLORS.primary,
+              border: "1px solid",
+              borderColor: COLORS.primary,
+            }}
+            transition="all 0.3s ease-in-out"
+            fontFamily="Poppins, sans-serif"
+          >
+            {loggedInUser.username}
+          </Button>
+        ) : (
+          <>
+            <AuthButton to="/auth/sign-in" text="Login" />
+            <AuthButton to="/auth/register-umkm" text="Get Started" isSolid />
+          </>
+        )}
       </Flex>
 
-      {/* Tombol menu hamburger untuk mobile */}
       <IconButton
         aria-label="Buka menu"
         icon={<HamburgerIcon />}
@@ -170,7 +193,6 @@ const Navbar = () => {
         color={COLORS.text}
       />
 
-      {/* Drawer untuk menu mobile */}
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
@@ -187,17 +209,41 @@ const Navbar = () => {
                 />
               ))}
               <Box pt={5}>
-                <AuthButton
-                  to="/auth/sign-in"
-                  text="Login"
-                  onClick={onClose}
-                />
-                <AuthButton
-                  to="/auth/register-umkm"
-                  text="Get Started"
-                  isSolid
-                  onClick={onClose}
-                />
+                {loggedInUser ? (
+                  <Button
+                    variant="solid"
+                    size="md"
+                    width="150px"
+                    height="33px"
+                    bg={COLORS.primary}
+                    color={COLORS.white}
+                    _hover={{
+                      bg: COLORS.white,
+                      color: COLORS.primary,
+                      border: "1px solid",
+                      borderColor: COLORS.primary,
+                    }}
+                    transition="all 0.3s ease-in-out"
+                    fontFamily="Poppins, sans-serif"
+                    onClick={onClose}
+                  >
+                    {loggedInUser.username}
+                  </Button>
+                ) : (
+                  <>
+                    <AuthButton
+                      to="/auth/sign-in"
+                      text="Login"
+                      onClick={onClose}
+                    />
+                    <AuthButton
+                      to="/auth/register-umkm"
+                      text="Get Started"
+                      isSolid
+                      onClick={onClose}
+                    />
+                  </>
+                )}
               </Box>
             </Stack>
           </DrawerBody>

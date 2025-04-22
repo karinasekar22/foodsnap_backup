@@ -6,7 +6,8 @@ const Location = require('./Location');
 const Restoran = require('./Restoran');
 const Kategori = require('./kategori');
 const LocationRestaurant = require('./LocationRestaurant');
-const Comment = require('../models/Comment');
+const Comment = require('./Comment');
+const CommentDetail = require('./CommentDetail');
 
 // Relasi Wishlist → WishlistFood
 Wishlist.hasMany(WishlistFood, { foreignKey: 'wishlist_id' });
@@ -27,14 +28,13 @@ Location.belongsToMany(Restoran, {
   otherKey: 'restaurant_id'
 });
 
-
 Restoran.belongsToMany(Location, {
   through: LocationRestaurant,
   foreignKey: 'restaurant_id',
   otherKey: 'location_id'
 });
 
-// DAN relasi dari restoran ke item makanan
+// Relasi dari Restoran ke Item Makanan
 Restoran.hasMany(ItemMakanan, { foreignKey: 'restoran_id' });
 ItemMakanan.belongsTo(Restoran, { foreignKey: 'restoran_id' });
 
@@ -42,19 +42,22 @@ ItemMakanan.belongsTo(Restoran, { foreignKey: 'restoran_id' });
 ItemMakanan.belongsTo(Kategori, { foreignKey: 'kategori_id' });
 Kategori.hasMany(ItemMakanan, { foreignKey: 'kategori_id' });
 
-// Komentar milik User
+// Relasi: Comment dimiliki oleh User
 Comment.belongsTo(User, { foreignKey: 'user_id' });
 User.hasMany(Comment, { foreignKey: 'user_id' });
 
-// Komentar milik Item Makanan
+// Relasi: Comment berhubungan dengan ItemMakanan
 Comment.belongsTo(ItemMakanan, { foreignKey: 'item_makanan_id' });
 ItemMakanan.hasMany(Comment, { foreignKey: 'item_makanan_id' });
 
+// Relasi: Comment → CommentDetail (1:N)
+Comment.hasMany(CommentDetail, { foreignKey: 'comment_id', as: 'CommentDetails' });
+CommentDetail.belongsTo(Comment, { foreignKey: 'comment_id' });
 
-// Komentar milik Item Makanan
-Comment.belongsTo(ItemMakanan, { foreignKey: 'item_makanan_id' });
-ItemMakanan.hasMany(Comment, { foreignKey: 'item_makanan_id' });
+// Relasi: CommentDetail dimiliki oleh User
+CommentDetail.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(CommentDetail, { foreignKey: 'user_id' });
 
 // (Opsional) Jika kamu ingin support balasan komentar:
-//Comment.hasMany(Comment, { as: 'replies', foreignKey: 'parent_id' });
-//Comment.belongsTo(Comment, { as: 'parent', foreignKey: 'parent_id' });
+// Comment.hasMany(Comment, { as: 'replies', foreignKey: 'parent_id' });
+// Comment.belongsTo(Comment, { as: 'parent', foreignKey: 'parent_id' });
