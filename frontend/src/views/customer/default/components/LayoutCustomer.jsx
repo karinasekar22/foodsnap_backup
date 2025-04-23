@@ -5,11 +5,11 @@ import SidebarCustomer from './SidebarCustomer';
 
 const LayoutCustomer = ({ children }) => {
   return (
-    <VStack spacing={0} align="stretch">
+    <VStack spacing={0} align="stretch" h="100vh">
       <NavbarCustomer />
       <HStack spacing={0} align="stretch" flex="1">
         <SidebarCustomer />
-        <Box flex="1" bg="gray.50" p={4}>
+        <Box flex="1" bg="gray.50" p={4} overflowY="auto">
           {children}
         </Box>
       </HStack>

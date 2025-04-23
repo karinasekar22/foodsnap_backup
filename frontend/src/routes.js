@@ -28,6 +28,7 @@ import Homepage from 'views/user/homepage';
 import OwnerDashboard from 'views/owner/default';
 import CustomerDashboard from 'views/customer/default';
 import ProdukDetail from 'views/customer/default/detail_page';
+import AnalyticalPage from 'views/customer/default/components/analytical_page';
 
 const routes = [
   {
@@ -118,8 +119,16 @@ const routes = [
     name: 'Produk Detail',
     layout: '/customer',
     path: '/produk/:id',
-    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />, // Menggunakan parameter dinamis ":id"
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
     component: <ProdukDetail />,
+  },
+
+  {
+    name: 'Analytical Page',
+    layout: '/customer',
+    path: '/Analytical',
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    component: <AnalyticalPage />,
   },
 
   {
