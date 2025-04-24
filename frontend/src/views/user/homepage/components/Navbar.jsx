@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Flex, Text, Button, Image, Box, IconButton, Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, Stack, useDisclosure } from '@chakra-ui/react';
-import { NavLink } from 'react-router-dom';
-import { HamburgerIcon } from '@chakra-ui/icons';
+import React, { useState, useEffect, useRef } from 'react';
+import { Flex, Text, Button, Image, Box, IconButton, Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, Stack, useDisclosure, Avatar, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, VStack, HStack } from '@chakra-ui/react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { HamburgerIcon, BellIcon } from '@chakra-ui/icons';
+import { FaUserAlt, FaClipboardList, FaBookmark, FaUsers, FaHeart, FaCog, FaHeadset, FaSignOutAlt } from 'react-icons/fa';
 import logoImage from 'assets/img/homepage/logo.png';
 
 // Konstanta untuk nilai yang sering digunakan
@@ -24,6 +25,18 @@ const NAV_LINKS = [
   { to: '/user/discover', text: 'Discover' },
   { to: '/user/categories', text: 'Categories' },
   { to: '/user/add-review', text: 'Add Review' }
+];
+
+// Menu profil untuk dropdown
+const PROFILE_MENU = [
+  { icon: FaUserAlt, text: 'My Profile', to: '/user/profile' },
+  { icon: FaClipboardList, text: 'My Reviews', to: '/user/reviews' },
+  { icon: FaBookmark, text: 'My Whislist', to: '/user/wishlist' },
+  { icon: FaUsers, text: 'Following', to: '/user/following' },
+  { icon: FaHeart, text: 'Favorites', to: '/user/favorites' },
+  { icon: FaCog, text: 'Account Settings', to: '/user/settings' },
+  { icon: FaHeadset, text: 'Help & Support', to: '/help' },
+  { icon: FaSignOutAlt, text: 'Log Out', to: '/auth/logout', isLogout: true }
 ];
 
 // Komponen untuk tombol login dan register
@@ -92,10 +105,57 @@ const NavItem = ({ to, text, isMobile, onClick }) => (
   </NavLink>
 );
 
+// Komponen untuk item menu profil dengan efek hover warna primary
+const ProfileMenuItem = ({ icon: Icon, text, to, onClick, isLogout, handleLogout }) => (
+  <Box
+    as={isLogout ? 'button' : NavLink}
+    to={isLogout ? undefined : to}
+    style={{ width: '100%' }}
+    onClick={isLogout ? handleLogout : onClick}
+  >
+    <HStack
+      py={2}
+      px={4}
+      _hover={{ bg: COLORS.hoverBg }}
+      borderRadius="md"
+      transition="all 0.2s ease-in-out"
+      role="group"
+    >
+      <Box 
+        color={COLORS.text} 
+        fontSize="sm"
+        _groupHover={{ color: COLORS.primary }}
+        transition="color 0.2s ease-in-out"
+      >
+        <Icon />
+      </Box>
+      <Text 
+        color={COLORS.text} 
+        fontSize="sm"
+        _groupHover={{ color: COLORS.primary }}
+        transition="color 0.2s ease-in-out"
+      >
+        {text}
+      </Text>
+    </HStack>
+  </Box>
+);
+
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isProfileOpen, onOpen: onProfileOpen, onClose: onProfileClose } = useDisclosure();
+  const profileRef = useRef();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('user');
+    setLoggedInUser(null);
+    onProfileClose();
+    onClose();
+    navigate('/auth/sign-in');
+  };
 
   useEffect(() => {
     const userSession = sessionStorage.getItem('user');
@@ -110,7 +170,6 @@ const Navbar = () => {
 
     window.addEventListener('scroll', handleScroll);
 
-    // Cleanup function
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -158,24 +217,74 @@ const Navbar = () => {
         display={{ base: 'none', md: 'flex' }}
       >
         {loggedInUser ? (
-          <Button
-            variant="solid"
-            size="md"
-            width="150px"
-            height="33px"
-            bg={COLORS.primary}
-            color={COLORS.white}
-            _hover={{
-              bg: COLORS.white,
-              color: COLORS.primary,
-              border: "1px solid",
-              borderColor: COLORS.primary,
-            }}
-            transition="all 0.3s ease-in-out"
-            fontFamily="Poppins, sans-serif"
-          >
-            {loggedInUser.username}
-          </Button>
+          <>
+            <IconButton
+              aria-label="Notifications"
+              icon={<BellIcon w={6} h={6} />}
+              variant="ghost"
+              color={COLORS.text}
+              _hover={{ color: COLORS.primary }}
+              transition="color 0.2s ease-in-out"
+            />
+            <Box position="relative" ref={profileRef}>
+              <Popover
+                placement="bottom-end"
+                isOpen={isProfileOpen}
+                onClose={onProfileClose}
+                closeOnBlur={true}
+                gutter={0}
+              >
+                <PopoverTrigger>
+                  <Avatar 
+                    size="sm" 
+                    src={loggedInUser?.avatarUrl || '/api/placeholder/40/40'}
+                    border="3px solid"
+                    borderColor={COLORS.primary}
+                    cursor="pointer"
+                    onClick={() => isProfileOpen ? onProfileClose() : onProfileOpen()}
+                    _hover={{ transform: 'scale(1.05)' }}
+                    transition="all 0.2s ease-in-out"
+                  />
+                </PopoverTrigger>
+                <PopoverContent
+                  width="250px"
+                  borderRadius="md"
+                  boxShadow="lg"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  _focus={{ outline: 'none' }}
+                  bg={COLORS.white}
+                >
+                  <PopoverHeader borderBottomWidth="1px" p={4}>
+                    <HStack>
+                      <Avatar 
+                        size="sm" 
+                        src={loggedInUser?.avatarUrl || '/api/placeholder/40/40'}
+                        border="2px solid"
+                        borderColor={COLORS.primary}
+                      />
+                      <Text fontWeight="medium">Hi, {loggedInUser?.username || 'User'}!</Text>
+                    </HStack>
+                  </PopoverHeader>
+                  <PopoverBody p={0}>
+                    <VStack spacing={0} align="stretch">
+                      {PROFILE_MENU.map((item, index) => (
+                        <ProfileMenuItem
+                          key={index}
+                          icon={item.icon}
+                          text={item.text}
+                          to={item.to}
+                          isLogout={item.isLogout}
+                          handleLogout={handleLogout}
+                          onClick={onProfileClose}
+                        />
+                      ))}
+                    </VStack>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            </Box>
+          </>
         ) : (
           <>
             <AuthButton to="/auth/sign-in" text="Login" />
@@ -210,25 +319,38 @@ const Navbar = () => {
               ))}
               <Box pt={5}>
                 {loggedInUser ? (
-                  <Button
-                    variant="solid"
-                    size="md"
-                    width="150px"
-                    height="33px"
-                    bg={COLORS.primary}
-                    color={COLORS.white}
-                    _hover={{
-                      bg: COLORS.white,
-                      color: COLORS.primary,
-                      border: "1px solid",
-                      borderColor: COLORS.primary,
-                    }}
-                    transition="all 0.3s ease-in-out"
-                    fontFamily="Poppins, sans-serif"
-                    onClick={onClose}
-                  >
-                    {loggedInUser.username}
-                  </Button>
+                  <Flex direction="column" gap={2}>
+                    <HStack spacing={4} mb={4}>
+                      <IconButton
+                        aria-label="Notifications"
+                        icon={<BellIcon w={6} h={6} />}
+                        variant="ghost"
+                        color={COLORS.text}
+                        _hover={{ color: COLORS.primary }}
+                        transition="color 0.2s ease-in-out"
+                      />
+                      <Avatar 
+                        size="sm" 
+                        src={loggedInUser?.avatarUrl || '/api/placeholder/40/40'} //nanti diganti dengan API
+                        border="3px solid"
+                        borderColor={COLORS.primary}
+                      />
+                      <Text fontWeight="medium">Hi, {loggedInUser?.username || 'User'}!</Text>
+                    </HStack>
+                    <VStack spacing={1} align="stretch">
+                      {PROFILE_MENU.map((item, index) => (
+                        <ProfileMenuItem
+                          key={index}
+                          icon={item.icon}
+                          text={item.to}
+                          to={item.to}
+                          isLogout={item.isLogout}
+                          handleLogout={handleLogout}
+                          onClick={onClose}
+                        />
+                      ))}
+                    </VStack>
+                  </Flex>
                 ) : (
                   <>
                     <AuthButton
