@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -11,10 +11,19 @@ import {
   InputLeftElement,
 } from '@chakra-ui/react';
 import { ChevronDownIcon, SearchIcon } from '@chakra-ui/icons';
-
 import heroImage from 'assets/img/homepage/background.png';
 
 const Hero = () => {
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+  useEffect(() => {
+    const userSession = sessionStorage.getItem('user');
+    if (userSession) {
+      const parsedUser = JSON.parse(userSession);
+      setLoggedInUser(parsedUser);
+    }
+  }, []);
+
   return (
     <Box
       bgImage={heroImage}
@@ -43,21 +52,27 @@ const Hero = () => {
           textAlign="center"
           lineHeight={{ base: "1.4", md: "1.2" }}
         >
-          <Box as="span" fontWeight="bold" letterSpacing="0.1em">
-            FoodSnap
+          <Box
+            as="span"
+            fontWeight="bold"
+            letterSpacing="0.1em"
+          >
+            {loggedInUser ? `Welcome back, ${loggedInUser.username}!` : 'FoodSnap'}
           </Box>
           <br />
-          <Box 
-            as="span" 
-            fontWeight="300" 
+          <Box
+            as="span"
+            fontWeight="300"
             fontSize={{ base: 'xl', sm: '2xl', md: '4xl' }}
             display="inline-block"
             mt={{ base: 2, md: 3 }}
           >
-            Take a snap & review your favorite meals!
+            {loggedInUser
+              ? 'Ready for another tasty discovery?'
+              : 'Take a snap & review your favorite meals!'}
           </Box>
         </Heading>
-        
+
         {/* Search Bar Container */}
         <Flex
           direction={{ base: "column", md: "row" }}
@@ -109,8 +124,8 @@ const Hero = () => {
           </Box>
 
           {/* Search Input and Button */}
-          <Flex 
-            flex={1} 
+          <Flex
+            flex={1}
             w={{ base: "100%", md: "auto" }}
             direction={{ base: "row", md: "row" }}
           >
@@ -126,11 +141,11 @@ const Hero = () => {
               />
             </InputGroup>
 
-            <Button 
-              colorScheme="white" 
-              size="md" 
-              borderRadius="7px" 
-              mx={1} 
+            <Button
+              colorScheme="white"
+              size="md"
+              borderRadius="7px"
+              mx={1}
               p={3}
               minW={{ base: "40px", md: "40px" }}
             >
