@@ -179,7 +179,7 @@ const Navbar = () => {
         ) : (
           <>
             <AuthButton to="/auth/sign-in" text="Login" />
-            <AuthButton to="/auth/register-umkm" text="Get Started" isSolid />
+            <AuthButton to="/auth/sign-up-role" text="Get Started" isSolid />
           </>
         )}
       </Flex>
@@ -237,7 +237,7 @@ const Navbar = () => {
                       onClick={onClose}
                     />
                     <AuthButton
-                      to="/auth/register-umkm"
+                      to="/auth/sign-up-role"
                       text="Get Started"
                       isSolid
                       onClick={onClose}
