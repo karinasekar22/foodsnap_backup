@@ -25,6 +25,7 @@ import SignUpRole from 'views/auth/sign-up-role';
 
 // User Imports
 import Homepage from 'views/user/homepage';
+import DiscoverPage from 'views/user/discoverpage';
 import OwnerDashboard from 'views/owner/default';
 import CustomerDashboard from 'views/customer/default';
 import ProdukDetail from 'views/customer/default/detail_page';
@@ -155,6 +156,14 @@ const routes = [
     icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     component: <Homepage />,
   },
+
+  {
+    name: 'Discover Page',
+    layout: '/user',
+    path: '/discoverpage',
+    icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
+    component: <DiscoverPage />,
+  }
 ];
 
 export default routes;
