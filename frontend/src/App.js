@@ -61,7 +61,7 @@ export default function Main() {
 
         {/* Unauthorized page */}
         <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/" element={<Navigate to="/auth/sign-in" replace />} />
+        <Route path="/" element={<Navigate to="/user/homepage" replace />} />
       </Routes>
     </ChakraProvider>
   );
