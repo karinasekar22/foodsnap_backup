@@ -11,6 +11,11 @@ router.post('/', verifyToken, uploadProduk.single('photo'), itemController.creat
 router.get('/itemMakananAll', itemController.getAllItems);
 
 router.get('/restoran/:restoran_id', itemController.getItemsByRestoran);
+
+
+// Get data Detail Item Makanan 
+
+router.get('/itemMakananDetail/:id' , itemController.getItemMakananDetail);
 // Endpoint untuk pencarian dan penyaringan item makanan
 router.get('/search', itemController.searchAndFilterItems);
 // Update

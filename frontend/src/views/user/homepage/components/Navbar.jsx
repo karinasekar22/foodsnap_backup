@@ -142,6 +142,8 @@ const ProfileMenuItem = ({ icon: Icon, text, to, onClick, isLogout, handleLogout
 );
 
 const Navbar = () => {
+  // State untuk mendeteksi apakah halaman di-scroll
+  // Hook untuk mengontrol buka/tutup drawer (menu mobile)
   const [scrolled, setScrolled] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -157,6 +159,7 @@ const Navbar = () => {
     navigate('/auth/sign-in');
   };
 
+  // Efek untuk mendeteksi scroll dan mengubah gaya navbar
   useEffect(() => {
     const userSession = sessionStorage.getItem('user');
     if (userSession) {
@@ -176,6 +179,7 @@ const Navbar = () => {
   }, []);
 
   return (
+    // Kontainer utama navbar dengan posisi sticky
     <Flex
       as="nav"
       align="center"
@@ -190,6 +194,7 @@ const Navbar = () => {
       fontFamily="Poppins, sans-serif"
       transition="all 0.3s ease"
     >
+      {/* Logo aplikasi */}
       <Image
         src={logoImage}
         alt="FoodSnap Logo"

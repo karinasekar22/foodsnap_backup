@@ -58,6 +58,21 @@ CommentDetail.belongsTo(Comment, { foreignKey: 'comment_id' });
 CommentDetail.belongsTo(User, { foreignKey: 'user_id' });
 User.hasMany(CommentDetail, { foreignKey: 'user_id' });
 
+
+
+// Komentar milik User
+Comment.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(Comment, { foreignKey: 'user_id' });
+
+// Komentar milik Item Makanan
+Comment.belongsTo(ItemMakanan, { foreignKey: 'item_makanan_id' });
+ItemMakanan.hasMany(Comment, { foreignKey: 'item_makanan_id' });
+
+
+// Komentar milik Item Makanan
+Comment.belongsTo(ItemMakanan, { foreignKey: 'item_makanan_id' });
+ItemMakanan.hasMany(Comment, { foreignKey: 'item_makanan_id' });
+
 // (Opsional) Jika kamu ingin support balasan komentar:
-// Comment.hasMany(Comment, { as: 'replies', foreignKey: 'parent_id' });
-// Comment.belongsTo(Comment, { as: 'parent', foreignKey: 'parent_id' });
+//Comment.hasMany(Comment, { as: 'replies', foreignKey: 'parent_id' });
+//Comment.belongsTo(Comment, { as: 'parent', foreignKey: 'parent_id' });

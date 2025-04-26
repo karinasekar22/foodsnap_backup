@@ -27,7 +27,10 @@ app.use('/api/comments', require('./routes/comment')); // Comment And Review
 
 app.use('/api/comments-detail', require('./routes/commentDetail')); // Comment And Replies
 app.use('/api/wishlist', require('./routes/wishlistRoutes'));
+// Serve static files dari folder uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/kategori', require('./routes/kategori')); // Tambahkan route kategori
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
