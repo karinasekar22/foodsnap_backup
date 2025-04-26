@@ -76,10 +76,10 @@ exports.searchAndFilterItems = async (req, res) => {
 
 exports.createItem = async (req, res) => {
   try {
-    const { restoran_id, caption , kategori_id } = req.body;
+    const { restoran_id, caption , kategori_id, description } = req.body;
     const photo_url = req.file ? `/uploads/produk/${req.file.filename}` : null;
 
-    const item = await ItemMakanan.create({ restoran_id, caption, photo_url ,kategori_id});
+    const item = await ItemMakanan.create({ restoran_id, caption, photo_url ,kategori_id, description});
     res.status(201).json({ message: 'Item makanan dibuat', item });
   } catch (err) {
         console.log("Params ", req.query);
@@ -99,6 +99,7 @@ exports.getItemsByRestoran = async (req, res) => {
   }
 };
 
+
 exports.getAllItems = async (req, res) => {
   try {
     const items = await ItemMakanan.findAll();
@@ -106,6 +107,30 @@ exports.getAllItems = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Gagal mengambil semua item makanan' });
+  }
+};
+
+exports.getItemMakananDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const item = await ItemMakanan.findByPk(id, {
+      include: [
+        {
+          model: Restoran,
+          attributes: ['restaurant_name'], // hanya ambil nama restoran
+        }
+      ]
+    });
+
+    if (!item) {
+      return res.status(404).json({ message: 'Item makanan tidak ditemukan' });
+    }
+
+    res.json(item);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Gagal mengambil detail item makanan' });
   }
 };
 

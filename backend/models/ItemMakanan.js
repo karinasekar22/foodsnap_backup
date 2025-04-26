@@ -21,6 +21,10 @@ const ItemMakanan = sequelize.define('ItemMakanan', {
   caption: {
     type: DataTypes.TEXT
   },
+
+  description: {
+    type: DataTypes.TEXT
+  },
   rating: {
     type: DataTypes.DOUBLE,
     defaultValue: 0

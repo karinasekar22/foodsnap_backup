@@ -7,10 +7,10 @@ import { ChevronRightIcon, StarIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'api/axios';
 
-const FoodCard = ({ food }) => {
+const FoodCardCategories = ({ food }) => {
   const navigate = useNavigate();
   const toast = useToast();
-  const item = food.ItemMakanan;
+  const item = food;
 
   const [isWishlisted, setIsWishlisted] = useState(false);
 
@@ -121,11 +121,6 @@ const FoodCard = ({ food }) => {
             ))}
             <Text fontSize="sm">{item.rating}</Text>
           </HStack>
-
-          <Text fontSize="xs" color="gray.500">{food.User.username || '-'}</Text>
-          <Text fontSize="sm" color="gray.700" mt={2} noOfLines={2}>
-            "{food.content}"
-          </Text>
         </VStack>
         <HStack justify="space-between" mt={2}>
           <Badge colorScheme="green">{item.Kategori?.nama || 'Belum Memiliki Kategori'}</Badge>
@@ -136,4 +131,4 @@ const FoodCard = ({ food }) => {
   );
 };
 
-export default FoodCard;
+export default FoodCardCategories;

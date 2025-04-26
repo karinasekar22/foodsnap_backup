@@ -32,6 +32,7 @@ const ProdukDetail = () => {
           axiosInstance.get(`/produk/item-makanan/${id}`),
           axiosInstance.get(`/comments/food-comment/${id}`),
         ]);
+        console.log(" get Response  Product" , resProduk.data);
         setProduk(resProduk.data);
         setKomentar(resKomentar.data.data);
       } catch (err) {

@@ -30,6 +30,7 @@ import OwnerDashboard from 'views/owner/default';
 import CustomerDashboard from 'views/customer/default';
 import ProdukDetail from 'views/customer/default/detail_page';
 import AnalyticalPage from 'views/customer/default/components/analytical_page';
+import CustomerCategoryPage from 'views/customer/default/components/CustomerCategoryPage';
 
 const routes = [
   {
@@ -120,8 +121,17 @@ const routes = [
     name: 'Produk Detail',
     layout: '/customer',
     path: '/produk/:id',
-    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />, // Menggunakan parameter dinamis ":id"
     component: <ProdukDetail />,
+  },
+
+
+  {
+    name: 'Kategori ',
+    layout: '/customer',
+    path: '/categories/:id',
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />, // Menggunakan parameter dinamis ":id"
+    component: <CustomerCategoryPage />,
   },
 
   {
