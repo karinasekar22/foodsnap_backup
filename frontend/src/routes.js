@@ -120,7 +120,7 @@ const routes = [
     name: 'Produk Detail',
     layout: '/customer',
     path: '/produk/:id',
-    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />, // Menggunakan parameter dinamis ":id"
     component: <ProdukDetail />,
   },
 

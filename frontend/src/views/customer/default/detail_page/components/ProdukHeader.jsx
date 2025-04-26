@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Image, Text, Button, Flex, Icon, VStack, Divider } from '@chakra-ui/react';
+import { Box, Image, Text, Button, Flex, Icon, VStack, Divider, HStack } from '@chakra-ui/react';
 import { FaStar, FaBookmark, FaHeart, FaCommentAlt } from 'react-icons/fa';
+import { StarIcon } from '@chakra-ui/icons';
 
 const ProdukHeader = ({ data }) => {
   if (!data) return null;
@@ -14,12 +15,15 @@ const ProdukHeader = ({ data }) => {
     ? new Date(data.created_at).toLocaleDateString()
     : 'Tanggal tidak tersedia';
 
+    console.log("Response Rating ", data.rating);
+  const ratingStar = data.rating > 1 ? data.rating : 1;
   return (
     <Box maxW="100%" mx="auto" p={12} bg="white" color="black">
       {/* Header */}
       <VStack align="start" mb={4}>
         <Text fontWeight="extrabold" fontSize="4xl" lineHeight="tight">
-          {data.nama_produk || 'Defaultnya Soto Ayam karena Item tak punya Nama🫠'}
+          {/* {data.caption || 'Defaultnya Soto Ayam karena Item tak punya Nama🫠'} */}
+          {data.caption}
         </Text>
         <Text fontSize="md" color="gray.600">
           {data.Restoran?.alamat || 'Bandung, Indonesia'}
@@ -43,7 +47,7 @@ const ProdukHeader = ({ data }) => {
             {createdAt}
           </Text>
         </VStack>
-        
+
         <Button
           ml={6}
           size="md"
@@ -54,7 +58,7 @@ const ProdukHeader = ({ data }) => {
           Follow
         </Button>
       </Flex>
-      
+
       <Divider my={6} borderColor="gray.300" />
       {/* Main Image Section */}
       <Box position="relative" mb={6} borderRadius="lg" overflow="hidden">
@@ -102,15 +106,20 @@ const ProdukHeader = ({ data }) => {
       <Flex justify="space-between" align="center">
         <Flex align="center">
           <Icon as={FaBookmark} color="green.600" boxSize={6} />
+
           <Flex align="center" ml={2} color="yellow.400">
-            <Icon as={FaStar} boxSize={5} />
-            <Icon as={FaStar} boxSize={5}/>
-            <Icon as={FaStar} boxSize={5}/>
-            <Icon as={FaStar} boxSize={5}/>
-            <Icon as={FaStar} boxSize={5}/>
+            <HStack spacing={1}>
+              {[...Array(5)].map((_, i) => (
+                <StarIcon
+                  key={i}
+                  color={i < Math.floor(ratingStar) ? 'yellow.400' : 'gray.300'}
+                />
+              ))}
+            </HStack>
           </Flex>
+
           <Text fontSize="md" fontWeight="semibold" ml={2}>
-            5/5{' '}
+            {ratingStar} / 5 {' '}
             <Text as="span" fontWeight="normal">
               (2.3k reviews)
             </Text>

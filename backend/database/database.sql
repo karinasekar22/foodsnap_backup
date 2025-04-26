@@ -37,6 +37,7 @@ CREATE TABLE item_makanan (
   photo_url TEXT,
   caption TEXT,
   rating DOUBLE PRECISION DEFAULT 0,
+  description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   is_aktif BOOLEAN DEFAULT TRUE,
   FOREIGN KEY (restoran_id) REFERENCES restoran(id) ON DELETE CASCADE
