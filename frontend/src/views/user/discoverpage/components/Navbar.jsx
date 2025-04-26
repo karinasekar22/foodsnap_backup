@@ -272,14 +272,14 @@ const Navbar = () => {
     >
       {/* Logo aplikasi */}
       <Flex align="center">
-        <Image
+        {/* <Image
           src={logoImage}
           alt="FoodSnap Logo"
           h={SIZES.logoHeight}
           maxW="100%"
           objectFit="contain"
           mr={2}
-        />
+        /> */}
         <Text fontSize="xl" fontWeight="bold" color={COLORS.white}>
           FoodSnap
         </Text>
