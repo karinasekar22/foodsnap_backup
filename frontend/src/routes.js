@@ -7,6 +7,8 @@ import {
   MdHome,
   MdLock,
   MdOutlineShoppingCart,
+  MdStoreMallDirectory,
+  MdRiceBowl,
 } from 'react-icons/md';
 
 // Admin Imports
@@ -113,7 +115,7 @@ const routes = [
     name: 'Customer Dashboard',
     layout: '/customer',
     path: '/default',
-    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     component: <CustomerDashboard />,
   },
 
@@ -143,13 +145,28 @@ const routes = [
   },
 
   {
-    name: 'Owner Dashboard',
+    name: 'Main Dashboard',
     layout: '/owner',
     path: '/default',
-    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />,
+    icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     component: <OwnerDashboard />,
   },
 
+  {
+    name: 'Manage Restaurant',
+    layout: '/owner',
+    path: '/restaurant',
+    icon: <Icon as={MdStoreMallDirectory} width="20px" height="20px" color="inherit" />,
+    component: <OwnerDashboard />,
+  },
+
+  {
+    name: 'Manage Products',
+    layout: '/owner',
+    path: '/products',
+    icon: <Icon as={MdRiceBowl} width="20px" height="20px" color="inherit" />,
+    component: <OwnerDashboard />,
+  },
 
   {
     name: 'RTL Admin',

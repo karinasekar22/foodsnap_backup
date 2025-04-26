@@ -1,10 +1,11 @@
 // layouts/LayoutUmkm.js
 import React from 'react';
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import routes from 'routes.js';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-const OwnerLayout = (props) =>  {
+
+const CustomerLayout = (props) =>  {
 const { theme, setTheme, ...rest } = props;
 
   const getRoute = () => {
@@ -56,4 +57,4 @@ const { theme, setTheme, ...rest } = props;
   );
 };
 
-export default OwnerLayout;
+export default CustomerLayout;
