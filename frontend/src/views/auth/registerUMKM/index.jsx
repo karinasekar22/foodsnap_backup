@@ -1,227 +1,425 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    Box,
-    Button,
-    Checkbox,
-    Flex,
-    FormControl,
-    FormLabel,
-    Heading,
-    Image,
-    Input,
-    Link,
-    Text,
-    VStack,
-    useToast,
-  } from '@chakra-ui/react';
-  import axios from '../../../api/axios'; // import axios
-  import { NavLink, useNavigate } from 'react-router-dom';
-  import logo from 'assets/img/auth/logo.png';
-  import registerUMKMIllustration from 'assets/img/auth/registerUMKM.png';
-  
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  Heading,
+  Image,
+  Input,
+  Link,
+  Text,
+  useToast,
+} from '@chakra-ui/react';
+import axios from '../../../api/axios';
+import { NavLink, useNavigate } from 'react-router-dom';
+import logo from 'assets/img/auth/logo.png';
+import registerUMKMIllustration from 'assets/img/auth/registerUMKM.png';
+
+// Komponen utama untuk halaman pendaftaran UMKM
 function SignUpUMKM() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [address, setAddress] = useState('');
-    const [role, setRole] = useState('umkm');
+  // State untuk menyimpan data input form dan status loading
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    address: '',
+    role: 'umkm',
+  });
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    address: '',
+  });
 
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const toast = useToast();
-    const navigate = useNavigate();
+  // Hook untuk menampilkan notifikasi dan navigasi
+  const toast = useToast();
+  const navigate = useNavigate();
 
-    const handleRegister = async () => {
-        if (!email || !username || !password || !confirmPassword) {
-            toast({
-                title: 'All fields are required!',
-                status: 'warning',
-                duration: 3000,
-                isClosable: true,
-            });
-            return;
+  // Fungsi untuk memvalidasi input secara real-time
+  const validateField = (name, value) => {
+    let error = '';
+    switch (name) {
+      case 'username':
+        if (value && value.trim().length < 3) {
+          error = 'Username must be at least 3 characters';
         }
-
-        if (password !== confirmPassword) {
-            toast({
-                title: 'Passwords do not match!',
-                status: 'warning',
-                duration: 3000,
-                isClosable: true,
-            });
-            return;
+        break;
+      case 'email':
+        if (value && !/\S+@\S+\.\S+/.test(value)) {
+          error = 'Email address is invalid';
         }
-
-        setIsLoading(true);
-        try {
-            const response = await axios.post('/auth/register', {
-                username,
-                email,
-                password,
-                address,
-                role
-            });
-
-            toast({
-                title: 'Registration Successful!',
-                description: 'You can now log in with your credentials.',
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            });
-
-            // Redirect to login page after successful registration
-
-            setTimeout(() => {
-                
-                navigate('/admin/default');
-            }, 3000);
-        } catch (err) {
-            console.log(err);
-            toast({
-                title: 'Registration Failed',
-                description: err.response?.data?.message || 'Something went wrong',
-                status: 'error',
-                duration: 3000,
-                isClosable: true,
-            });
-        } finally {
-            setIsLoading(false);
+        break;
+      case 'password':
+        if (value && value.length < 6) {
+          error = 'Password must be at least 6 characters';
         }
-    };
+        break;
+      case 'confirmPassword':
+        if (value && value !== formData.password) {
+          error = 'Passwords do not match';
+        }
+        break;
+      case 'address':
+        if (value && value.trim().length < 5) {
+          error = 'Please enter a valid address';
+        }
+        break;
+      default:
+        break;
+    }
+    setErrors((prev) => ({ ...prev, [name]: error }));
+    return error === '';
+  };
 
-    return (
+  // Efek untuk memvalidasi input secara real-time saat nilai berubah
+  useEffect(() => {
+    Object.keys(formData).forEach((key) => validateField(key, formData[key]));
+  }, [formData]);
 
-        <Flex
-            height="100vh"
-            overflowY="auto" // Menambahkan scroll jika konten lebih besar dari layar
-            direction={{ base: 'column', lg: 'row' }}
+  // Fungsi untuk menangani perubahan input
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Fungsi untuk menangani proses pendaftaran
+  const handleRegister = async () => {
+    // Validasi semua input sebelum mengirim data
+    const isValid = Object.keys(formData)
+      .filter((key) => key !== 'role') // Role tidak perlu divalidasi karena sudah default 'umkm'
+      .every((key) => validateField(key, formData[key]));
+
+    if (!isValid || Object.values(formData).some((value) => !value)) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please check all fields and try again.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (!isTermsAccepted) {
+      toast({
+        title: 'Please accept the terms and conditions.',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Kirim data pendaftaran ke server
+      await axios.post('/auth/register', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        address: formData.address,
+        role: formData.role,
+      });
+
+      toast({
+        title: 'Registration Successful!',
+        description: 'You can now log in with your credentials.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      // Arahkan ke halaman admin setelah berhasil
+      setTimeout(() => navigate('/admin/default'), 3000);
+    } catch (err) {
+      // Tangani error dari server
+      toast({
+        title: 'Registration Failed',
+        description: err.response?.data?.message || 'Something went wrong',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Flex
+      height="100vh"
+      width="100%"
+      direction={{ base: 'column', lg: 'row' }}
+      overflow="hidden"
+    >
+      {/* Bagian kiri: Ilustrasi (hanya tampil di layar besar) */}
+      <Box
+        flex="1"
+        bg="#23653B"
+        color="white"
+        overflow="hidden"
+        display={{ base: 'none', lg: 'block' }}
+      >
+        <Box
+          p={{ md: 6, lg: 8 }}
+          pt={{ md: 6, lg: 10 }}
+          height="100%"
+          display="flex"
+          flexDirection="column"
+          justifyContent="flex-start"
         >
-            {/* Left Section - Illustration */}
-            <Box
-                maxW={{ base: "90%", md: "725px" }} mx="auto" width="100%"
-                flex="1"
-                bg="#23653B"
-                color="white"
-                fontFamily="Arimo"
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                p={{ base: 4, lg: 12 }}
+          <Box maxW={{ md: '400px', lg: '450px' }} mx="auto">
+            <Heading
+              fontSize={{ md: 'xl', lg: '2xl' }}
+              mb={3}
+              textAlign={{ base: 'center', lg: 'left' }}
+              mt={{ base: 4, lg: 2 }}
             >
-                <VStack spacing={5} align="center" textAlign="left" marginTop={{ base: 0, lg: '5px' }}>
-                    <Box mt={{ base: 4, lg: 8 }}>
-                        <Heading fontSize={{ base: 'xl', lg: '3xl' }} mb={2}>
-                            One snap away from your next favorite meal
-                        </Heading>
-                        <Text fontSize={{ base: 'sm', lg: 'xl' }}>
-                            Join thousands of foodies sharing what they eat, love, and crave.
-                        </Text>
-                        <Image
-                            src={registerUMKMIllustration}
-                            alt="FoodSnap Illustration Register UMKM"
-                            maxH="666px" // Memastikan gambar bisa mengisi tinggi kontainer tanpa memotong
-                            width="100%" // Gambar akan menyesuaikan lebar kontainer
-                            objectFit="contain" // Memastikan gambar tetap dalam proporsi tanpa terpotong
-                            mt={{ base: 4, lg: 8 }}
-                        />
-                    </Box>
-                </VStack>
+              One snap away from your next favorite meal
+            </Heading>
+            <Text
+              fontSize={{ md: 'xs', lg: 'sm' }}
+              mb={2}
+              textAlign={{ base: 'center', lg: 'left' }}
+            >
+              Join thousands of foodies sharing what they eat, love, and crave.
+            </Text>
+            <Text
+              fontSize={{ md: 'xs', lg: 'sm' }}
+              mb={3}
+              textAlign={{ base: 'center', lg: 'left' }}
+            >
+              Showcase your dishes to hungry food enthusiasts across the city.
+            </Text>
+            <Box width="100%" display="flex" justifyContent="center" mt={2}>
+              <Image
+                src={registerUMKMIllustration}
+                alt="FoodSnap Illustration Register UMKM"
+                maxW={{ md: '80%', lg: '90%' }}
+                objectFit="contain"
+              />
             </Box>
+          </Box>
+        </Box>
+      </Box>
 
+      {/* Bagian kanan: Formulir pendaftaran */}
+      <Flex
+        flex="1"
+        direction="column"
+        p={{ base: 4, md: 6, lg: 10 }}
+        pt={{ base: 6, md: 8 }}
+        overflow="auto"
+        bg="white"
+        position="relative"
+      >
+        {/* Logo aplikasi */}
+        <Box position="absolute" top="4" right="5">
+          <Image
+            src={logo}
+            alt="FoodSnap Logo"
+            h={{ base: '60px', md: '60px', lg: '70px' }}
+            objectFit="contain"
+          />
+        </Box>
 
-             <Box
-                   
-                   flex="1"
-                   p={{ base: 4, lg: 12 }}
-                   display="flex"
-                   flexDirection="column"
-                   justifyContent="center"
-                   bg="white"
-                   position="relative"
-                 >
+        {/* Konten utama formulir */}
+        <Box maxW="550px" mx="auto" width="100%" mt={{ base: 20, md: 24 }}>
+          <Heading
+            fontSize={{ base: 'xl', md: '2xl' }}
+            color="green.700"
+            textAlign={{ base: 'center', md: 'left' }}
+            mb={1}
+          >
+            Register Your Food Business
+          </Heading>
+          <Text
+            fontSize={{ base: 'xs', md: 'sm' }}
+            color="gray.600"
+            textAlign={{ base: 'center', md: 'left' }}
+            mb={6}
+          >
+            Share your culinary creations with food lovers across the city. Join
+            FoodSnap's growing network of restaurants!
+          </Text>
 
-                <VStack spacing={4} align="center" textAlign="left">
-                    <Heading fontSize="2xl" color="green.800">
-                        Create Your Account
-                    </Heading>
+          {/* Input untuk nama pengguna bisnis */}
+          <FormControl mb={4} isInvalid={errors.username}>
+            <FormLabel fontSize="sm" color="gray.700" mb={1}>
+              Business Username{' '}
+              <Box as="span" color="red.500">
+                *
+              </Box>
+            </FormLabel>
+            <Input
+              type="text"
+              name="username"
+              placeholder="Enter your business username"
+              value={formData.username}
+              onChange={handleInputChange}
+              size="md"
+              height="44px"
+              borderRadius="md"
+            />
+            <FormErrorMessage fontSize="xs">{errors.username}</FormErrorMessage>
+          </FormControl>
 
-                    <FormControl isRequired>
-                        <FormLabel>Username</FormLabel>
-                        <Input
-                            type="text"
-                            placeholder="Enter your username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                    </FormControl>
+          {/* Input untuk email */}
+          <FormControl mb={4} isInvalid={errors.email}>
+            <FormLabel fontSize="sm" color="gray.700" mb={1}>
+              Email{' '}
+              <Box as="span" color="red.500">
+                *
+              </Box>
+            </FormLabel>
+            <Input
+              type="email"
+              name="email"
+              placeholder="business@example.com"
+              value={formData.email}
+              onChange={handleInputChange}
+              size="md"
+              height="44px"
+              borderRadius="md"
+            />
+            <FormErrorMessage fontSize="xs">{errors.email}</FormErrorMessage>
+          </FormControl>
 
-                    <FormControl isRequired>
-                        <FormLabel>Email Address</FormLabel>
-                        <Input
-                            type="email"
-                            placeholder="you@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </FormControl>
+          {/* Input untuk alamat bisnis */}
+          <FormControl mb={4} isInvalid={errors.address}>
+            <FormLabel fontSize="sm" color="gray.700" mb={1}>
+              Business Address{' '}
+              <Box as="span" color="red.500">
+                *
+              </Box>
+            </FormLabel>
+            <Input
+              type="text"
+              name="address"
+              placeholder="Enter your business address"
+              value={formData.address}
+              onChange={handleInputChange}
+              size="md"
+              height="44px"
+              borderRadius="md"
+            />
+            <FormErrorMessage fontSize="xs">{errors.address}</FormErrorMessage>
+          </FormControl>
 
-                    <FormControl isRequired>
-                        <FormLabel>Password</FormLabel>
-                        <Input
-                            type="password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </FormControl>
+          {/* Input untuk kata sandi */}
+          <FormControl mb={4} isInvalid={errors.password}>
+            <FormLabel fontSize="sm" color="gray.700" mb={1}>
+              Password{' '}
+              <Box as="span" color="red.500">
+                *
+              </Box>
+            </FormLabel>
+            <Input
+              type="password"
+              name="password"
+              placeholder="Create a strong password"
+              value={formData.password}
+              onChange={handleInputChange}
+              size="md"
+              height="44px"
+              borderRadius="md"
+            />
+            <FormErrorMessage fontSize="xs">{errors.password}</FormErrorMessage>
+          </FormControl>
 
-                    <FormControl isRequired>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <Input
-                            type="password"
-                            placeholder="Confirm your password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
-                    </FormControl>
+          {/* Input untuk konfirmasi kata sandi */}
+          <FormControl mb={5} isInvalid={errors.confirmPassword}>
+            <FormLabel fontSize="sm" color="gray.700" mb={1}>
+              Confirm Password{' '}
+              <Box as="span" color="red.500">
+                *
+              </Box>
+            </FormLabel>
+            <Input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm your password"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              size="md"
+              height="44px"
+              borderRadius="md"
+            />
+            <FormErrorMessage fontSize="xs">{errors.confirmPassword}</FormErrorMessage>
+          </FormControl>
 
+          {/* Checkbox untuk syarat dan ketentuan */}
+          <Box mb={5}>
+            <Checkbox
+              colorScheme="green"
+              isChecked={isTermsAccepted}
+              onChange={(e) => setIsTermsAccepted(e.target.checked)}
+              size="sm"
+            >
+              <Text fontSize="xs">
+                Accept Terms & Conditions for Business Owners
+              </Text>
+            </Checkbox>
+          </Box>
 
-                    <FormControl isRequired>
-                        <FormLabel>Address</FormLabel>
-                        <Input
-                            type="text"
-                            placeholder="Your Address"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                        />
-                    </FormControl>
+          {/* Tombol untuk mendaftar */}
+          <Button
+            isLoading={isLoading}
+            color="white"
+            bgColor="#23653B"
+            width="100%"
+            mb={5}
+            height="44px"
+            fontSize="md"
+            onClick={handleRegister}
+            _hover={{ bg: '#1C4F2F' }}
+            borderRadius="md"
+          >
+            Register Business
+          </Button>
 
-                    <Button
-                        type="submit"
-                        isLoading={isLoading}
-                        loadingText="Registering..."
-                        color="white"
-                        bgColor="#23653B"
-                        width="100%"
-                        onClick={handleRegister}
-                        _hover={{ bg: '#1C4F2F' }}
-                    >
-                        Sign Up
-                    </Button>
+          {/* Tombol kembali ke halaman utama */}
+          <Button
+            isLoading={isLoading}
+            color="#23653B"
+            bgColor="white"
+            border="1px solid #23653B"
+            width="100%"
+            mb={5}
+            height="44px"
+            fontSize="md"
+            _hover={{ bg: '#f0f0f0' }}
+            borderRadius="md"
+            onClick={() => navigate('/user/homepage')}
+          >
+            Back to Home
+          </Button>
 
-                    <Text fontSize="sm" color="gray.600" textAlign="center">
-                        Already have an account?{' '}
-                        <NavLink to="/auth/sign-in" style={{ color: '#23653B' }}>
-                            Log in here
-                        </NavLink>
-                    </Text>
-                </VStack>
-            </Box>
-
-
-        </Flex>
-    );
+          {/* Tautan untuk pendaftaran sebagai pelanggan */}
+          <Text fontSize="xs" textAlign="center" color="gray.600">
+            Want to join as a food explorer instead?{' '}
+            <Link
+              as={NavLink}
+              to="/auth/sign-up"
+              color="green.600"
+              fontWeight="medium"
+            >
+              Sign up as a Customer
+            </Link>
+          </Text>
+        </Box>
+      </Flex>
+    </Flex>
+  );
 }
 
 export default SignUpUMKM;
