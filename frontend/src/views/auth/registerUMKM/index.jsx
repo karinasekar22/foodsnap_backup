@@ -269,6 +269,7 @@ function SignUpUMKM() {
               size="md"
               height="44px"
               borderRadius="md"
+              autoComplete="off" 
             />
             <FormErrorMessage fontSize="xs">{errors.username}</FormErrorMessage>
           </FormControl>
@@ -290,6 +291,7 @@ function SignUpUMKM() {
               size="md"
               height="44px"
               borderRadius="md"
+              autoComplete="email" 
             />
             <FormErrorMessage fontSize="xs">{errors.email}</FormErrorMessage>
           </FormControl>
@@ -311,6 +313,7 @@ function SignUpUMKM() {
               size="md"
               height="44px"
               borderRadius="md"
+              autoComplete="off" 
             />
             <FormErrorMessage fontSize="xs">{errors.address}</FormErrorMessage>
           </FormControl>
@@ -332,6 +335,7 @@ function SignUpUMKM() {
               size="md"
               height="44px"
               borderRadius="md"
+              autoComplete="new-password" 
             />
             <FormErrorMessage fontSize="xs">{errors.password}</FormErrorMessage>
           </FormControl>
@@ -353,8 +357,11 @@ function SignUpUMKM() {
               size="md"
               height="44px"
               borderRadius="md"
+              autoComplete="new-password" 
             />
-            <FormErrorMessage fontSize="xs">{errors.confirmPassword}</FormErrorMessage>
+            <FormErrorMessage fontSize="xs">
+              {errors.confirmPassword}
+            </FormErrorMessage>
           </FormControl>
 
           {/* Checkbox untuk syarat dan ketentuan */}
