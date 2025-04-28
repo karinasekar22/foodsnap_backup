@@ -21,6 +21,6 @@ router.post('/add', verifyToken, wishlistController.addToWishlist);
  * Body: { item_makanan_id }
  * Endpoint: /api/wishlist/remove
  */
-router.delete('/remove', verifyToken, wishlistController.removeFromWishlist);
+router.delete('/remove/:item_makanan_id', verifyToken, wishlistController.removeFromWishlist);
 
 module.exports = router;
