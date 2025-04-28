@@ -14,6 +14,7 @@ import ProdukHeader from './components/ProdukHeader';
 import ProdukDeskripsi from './components/ProdukDeskripsi';
 import KomentarList from './components/KomentarList';
 import FormKomentar from './components/FormKomentar';
+import LayoutCustomer from '../components/LayoutCustomer';
 
 const ProdukDetail = () => {
   const { id } = useParams();
@@ -90,6 +91,7 @@ const ProdukDetail = () => {
   }
 
   return (
+    <LayoutCustomer>
     <Box
       w="full"
       px={{ base: 4, md: 12, lg: 20 }}
@@ -129,6 +131,7 @@ const ProdukDetail = () => {
         />
       </VStack>
     </Box>
+    </LayoutCustomer>
   );
 };
 

@@ -12,7 +12,7 @@ exports.getUserWishlist = async (req, res) => {
         model: WishlistFood,
         include: {
           model: ItemMakanan,
-          attributes: ['id', 'caption', 'rating'],
+          attributes: ['id', 'caption', 'rating','description' , 'photo_url'],
         }
       }
     });
@@ -66,8 +66,9 @@ exports.addToWishlist = async (req, res) => {
 exports.removeFromWishlist = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { item_makanan_id } = req.body;
+    const { item_makanan_id } = req.params; // 👈 ambil dari params!
 
+    console.log("Item Makanan Id: ", item_makanan_id);
     const wishlist = await Wishlist.findOne({ where: { user_id: userId } });
 
     if (!wishlist) {

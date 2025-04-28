@@ -31,6 +31,7 @@ import CustomerDashboard from 'views/customer/default';
 import ProdukDetail from 'views/customer/default/detail_page';
 import AnalyticalPage from 'views/customer/default/components/analytical_page';
 import CustomerCategoryPage from 'views/customer/default/components/CustomerCategoryPage';
+import CustomerWishlistPage from 'views/customer/default/components/CustomerWishlistPage';
 
 const routes = [
   {
@@ -132,6 +133,16 @@ const routes = [
     path: '/categories/:id',
     icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />, // Menggunakan parameter dinamis ":id"
     component: <CustomerCategoryPage />,
+  },
+
+
+
+  {
+    name: 'Wishlist ',
+    layout: '/customer',
+    path: '/Wishlist',
+    icon: <Icon as={MdPerson} width="20px" height="20px" color="inherit" />, // Menggunakan parameter dinamis ":id"
+    component: <CustomerWishlistPage />,
   },
 
   {
