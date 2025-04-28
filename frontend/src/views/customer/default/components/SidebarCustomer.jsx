@@ -1,18 +1,35 @@
 import React from 'react';
 import { VStack, HStack, Icon, Text } from '@chakra-ui/react';
-import { FaHome, FaSearch, FaHeart, FaCog } from 'react-icons/fa';
+import { FaHome, FaSearch, FaHeart, FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate, useLocation, matchPath } from 'react-router-dom';
 
 const navItems = [
   { icon: FaHome, label: "Dashboard", path: "/customer/default" },
-  { icon: FaSearch, label: "Discover", path: "/customer/discover" },
+  { icon: FaSearch, label: "Discover", path: "/" },
   { icon: FaHeart, label: "Wishlist", path: "/customer/wishlist" },
-  { icon: FaCog, label: "Settings", path: "/customer/settings" },
+  { icon: FaSignOutAlt, label: "Logout", path: "/logout" }, // Tambahkan Logout
 ];
 
 const SidebarCustomer = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleLogout = () => {
+  const confirmLogout = window.confirm('Apakah Anda yakin ingin logout?');
+  if (confirmLogout) {
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate('/');
+  }
+};
+
+  const handleNavigation = (path) => {
+    if (path === '/logout') {
+      handleLogout();
+    } else {
+      navigate(path);
+    }
+  };
 
   return (
     <VStack
@@ -26,7 +43,7 @@ const SidebarCustomer = () => {
       fontFamily="Poppins, sans-serif"
     >
       {navItems.map((item, idx) => {
-        const isActive = matchPath(item.path, location.pathname);
+        const isActive = matchPath(item.path, location.pathname) && item.label !== "Logout";
 
         return (
           <HStack
@@ -40,10 +57,10 @@ const SidebarCustomer = () => {
             cursor="pointer"
             w="full"
             _hover={{
-              bg: '#1DA344',
-              color: 'white'
+              bg: item.label === "Logout" ? '#E53E3E' : '#1DA344',
+              color: 'white',
             }}
-            onClick={() => navigate(item.path)}
+            onClick={() => handleNavigation(item.path)}
           >
             <Icon as={item.icon} boxSize={5} />
             <Text fontWeight="medium">{item.label}</Text>
