@@ -1,184 +1,126 @@
-import React, { useEffect, useState } from "react";
+// Chakra imports
 import {
-  Box,
-  Button,
-  Flex,
-  IconButton,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  Text,
-  useColorModeValue,
-  useDisclosure,
-  useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Input,
-  FormControl,
-  FormLabel,
-  Spinner,
-} from "@chakra-ui/react";
-import { AddIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
-import Card from "components/card/Card";
-import axios from "api/axios";
-const AnalyticOwner = () => {
-  const textColor = useColorModeValue("secondaryGray.900", "white");
-  const tableBg = useColorModeValue("white", "gray.700");
-  const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ restaurant_name: "", lokasi: "" });
-  const [editId, setEditId] = useState(null);
-
-  const API_URL = `${process.env.REACT_APP_API_BACKEND}/api/restoran/`;
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(API_URL);
-      setData(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleInputChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async () => {
-    try {
-      if (editId) {
-        await axios.put(`${API_URL}${editId}`, form);
-        toast({ title: "Data berhasil diupdate", status: "success", isClosable: true });
-      } else {
-        await axios.post(API_URL, form);
-        toast({ title: "Data berhasil ditambahkan", status: "success", isClosable: true });
-      }
-      setForm({ restaurant_name: "", lokasi: "" });
-      setEditId(null);
-      onClose();
-      fetchData();
-    } catch (error) {
-      console.error("Error saving data:", error);
-      toast({ title: "Gagal menyimpan data", status: "error", isClosable: true });
-    }
-  };
-
-  const handleEdit = (item) => {
-    setForm({ restaurant_name: item.restaurant_name, lokasi: item.lokasi });
-    setEditId(item.id);
-    onOpen();
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`${API_URL}${id}`);
-      toast({ title: "Data berhasil dihapus", status: "success", isClosable: true });
-      fetchData();
-    } catch (error) {
-      console.error("Error deleting data:", error);
-      toast({ title: "Gagal menghapus data", status: "error", isClosable: true });
-    }
-  };
-
-  return (
-    <Card p={4} w="100%">
-      <Flex justify="space-between" align="center" mb={4}>
-        <Text fontSize="xl" fontWeight="bold" color={textColor}>
-          Data Restoran
-        </Text>
-        <Button leftIcon={<AddIcon />} colorScheme="blue" onClick={() => { setEditId(null); setForm({ restaurant_name: "", lokasi: "" }); onOpen(); }}>
-          Tambah Data
-        </Button>
-      </Flex>
-
-      {loading ? (
-        <Flex justify="center" align="center" py={10}><Spinner size="xl" /></Flex>
-      ) : (
-        <Box overflowX="auto">
-          <Table variant="simple" bg={tableBg}>
-            <Thead>
-              <Tr>
-                <Th>No</Th>
-                <Th>Nama Restoran</Th>
-                <Th>Lokasi</Th>
-                <Th>Aksi</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.map((item, index) => (
-                <Tr key={item.id}>
-                  <Td>{index + 1}</Td>
-                  <Td>{item.restaurant_name}</Td>
-                  <Td>{item.lokasi}</Td>
-                  <Td>
-                    <IconButton
-                      aria-label="Edit"
-                      icon={<EditIcon />}
-                      size="sm"
-                      colorScheme="yellow"
-                      mr={2}
-                      onClick={() => handleEdit(item)}
-                    />
-                    <IconButton
-                      aria-label="Hapus"
-                      icon={<DeleteIcon />}
-                      size="sm"
-                      colorScheme="red"
-                      onClick={() => handleDelete(item.id)}
-                    />
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
-      )}
-
-      {/* Modal Form */}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{editId ? "Edit Data" : "Tambah Data"}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl mb={4}>
-              <FormLabel>Nama Restoran</FormLabel>
-              <Input name="restaurant_name" value={form.restaurant_name} onChange={handleInputChange} />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Lokasi</FormLabel>
-              <Input name="lokasi" value={form.lokasi} onChange={handleInputChange} />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
-              Simpan
+    Box,
+    Button,
+    Flex,
+    Icon,
+    Text,
+    useColorModeValue,
+  } from "@chakra-ui/react";
+  // Custom components
+  import Card from "components/card/Card.js";
+  import LineChart from "./LineChartOwner";
+  import React from "react";
+  import { IoCheckmarkCircle } from "react-icons/io5";
+  import { MdBarChart, MdOutlineCalendarToday } from "react-icons/md";
+  // Assets
+  import { RiArrowUpSFill } from "react-icons/ri";
+  import {
+    lineChartDataTotalSpent,
+    lineChartOptionsTotalSpent,
+  } from "./charts";
+  
+  const AnalyticOwner = (props) => {
+    const { ...rest } = props;
+  
+    // Chakra Color Mode
+  
+    const textColor = useColorModeValue("secondaryGray.900", "white");
+    const textColorSecondary = useColorModeValue("secondaryGray.600", "white");
+    const boxBg = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
+    const iconColor = useColorModeValue("green.300", "white");
+    const bgButton = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
+    const bgHover = useColorModeValue(
+      { bg: "secondaryGray.400" },
+      { bg: "whiteAlpha.50" }
+    );
+    const bgFocus = useColorModeValue(
+      { bg: "secondaryGray.300" },
+      { bg: "whiteAlpha.100" }
+    );
+    return (
+      <Card
+        justifyContent='center'
+        align='center'
+        direction='column'
+        w='100%'
+        mb='0px'
+        {...rest}>
+        <Flex justify='space-between' ps='0px' pe='20px' pt='5px'>
+          <Flex align='center' w='100%'>
+            <Button
+              bg={boxBg}
+              fontSize='sm'
+              fontWeight='500'
+              color={textColorSecondary}
+              borderRadius='7px'>
+              <Icon
+                as={MdOutlineCalendarToday}
+                color={textColorSecondary}
+                me='4px'
+              />
+              This month
             </Button>
-            <Button variant="ghost" onClick={onClose}>
-              Batal
+            <Button
+              ms='auto'
+              align='center'
+              justifyContent='center'
+              bg={bgButton}
+              _hover={bgHover}
+              _focus={bgFocus}
+              _active={bgFocus}
+              w='37px'
+              h='37px'
+              lineHeight='100%'
+              borderRadius='10px'
+              {...rest}>
+              <Icon as={MdBarChart} color={iconColor} w='24px' h='24px' />
             </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Card>
-  );
-};
-
-export default AnalyticOwner;
+          </Flex>
+        </Flex>
+        <Flex w='100%' flexDirection={{ base: "column", lg: "row" }}>
+          <Flex flexDirection='column' me='20px' mt='28px'>
+            <Text
+              color={textColor}
+              fontSize='34px'
+              textAlign='start'
+              fontWeight='700'
+              lineHeight='100%'>
+              $37.5K
+            </Text>
+            <Flex align='center' mb='20px'>
+              <Text
+                color='secondaryGray.600'
+                fontSize='sm'
+                fontWeight='500'
+                mt='4px'
+                me='12px'>
+                Total Spent
+              </Text>
+              <Flex align='center'>
+                <Icon as={RiArrowUpSFill} color='green.500' me='2px' mt='2px' />
+                <Text color='green.500' fontSize='sm' fontWeight='700'>
+                  +2.45%
+                </Text>
+              </Flex>
+            </Flex>
+  
+            <Flex align='center'>
+              <Icon as={IoCheckmarkCircle} color='green.500' me='4px' />
+              <Text color='green.500' fontSize='md' fontWeight='700'>
+                On track
+              </Text>
+            </Flex>
+          </Flex>
+          <Box minH='260px' minW='75%' mt='auto'>
+            <LineChart
+              chartData={lineChartDataTotalSpent}
+              chartOptions={lineChartOptionsTotalSpent}
+            />
+          </Box>
+        </Flex>
+      </Card>
+    );
+  }
+  
+  export default AnalyticOwner;
