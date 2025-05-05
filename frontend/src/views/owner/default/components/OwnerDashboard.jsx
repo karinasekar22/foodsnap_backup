@@ -1,4 +1,4 @@
-import { Box, VStack, HStack } from '@chakra-ui/react';
+import { Box, VStack, HStack, Flex } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import axiosInstance from 'api/axios';
 import ReportCard from './report_card/ReportCard';
@@ -26,22 +26,14 @@ const OwnerDashboard = () => {
 
   if (loading) return <div>Loading...</div>;
   return (
-    <Box>
-      <ReportCard />
-      <HStack justify="space-between" w="100%" p={2}>
-        <VStack w="100%">
-          <AnalyticOwner />
-          <TopReviews
-            tableData={tableDataTopCreators}
-            columnsData={tableColumnsTopCreators}
-          />
-        </VStack>
-        <VStack>
-          <Calendar />
-          <DailyTraffic />
-        </VStack>
-      </HStack>
-    </Box>
+ <Box mt="20vh">
+  <HStack justify="space-between" w="100%" p={2}>
+    <VStack w="100%">
+      <AnalyticOwner />
+    </VStack>
+  </HStack>
+</Box>
+
   );
 };
 
