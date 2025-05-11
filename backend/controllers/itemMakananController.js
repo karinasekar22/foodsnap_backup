@@ -142,6 +142,8 @@ exports.updateItem = async (req, res) => {
     if (!item) return res.status(404).json({ message: 'Item tidak ditemukan' });
 
     const updateData = req.body;
+
+    console.log(" Description ",req.body.description);
     if (req.file) {
       updateData.photo_url = `/uploads/produk/${req.file.filename}`;
     }
