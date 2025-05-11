@@ -34,7 +34,7 @@ import ProdukDetail from 'views/customer/default/detail_page';
 import AnalyticalPage from 'views/customer/default/components/analytical_page';
 import CustomerCategoryPage from 'views/customer/default/components/CustomerCategoryPage';
 import CustomerWishlistPage from 'views/customer/default/components/CustomerWishlistPage';
-import ManageRestorant from 'views/owner/default/components/ManageRestorant';
+import ManageRestorant from 'views/owner/restaurant';
 
 const routes = [
   {

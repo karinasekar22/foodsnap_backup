@@ -1,6 +1,6 @@
 import React from 'react';
 import LayoutOwner from './components/LayoutOwner';
-import OwnerDashboard from './components/ManageRestorant';
+import OwnerDashboard from './components/OwnerDashboard';
 
 const OwnerDashboardPage = () => {
   return (

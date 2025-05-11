@@ -1,8 +1,8 @@
 import { Box, VStack, HStack, Flex } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import axiosInstance from 'api/axios';
-import RestaurantManage from './RestaurantManage/RestaurantManage';
-import LayoutOwner from './LayoutOwner';
+import RestaurantManage from '../restaurant/components/RestaurantManage';
+import LayoutOwner from '../default/components/LayoutOwner';
 
 const ManageRestorant = () => {
   const [loading, setLoading] = useState(true); // Inisialisasi state loading
