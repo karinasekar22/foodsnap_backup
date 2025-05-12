@@ -47,9 +47,9 @@ exports.addToWishlist = async (req, res) => {
       }
     });
 
-    // if (existing) {
-    //   return res.status(400).json({ message: 'Item sudah ada di wishlist' });
-    // }
+    if (existing) {
+      return res.status(400).json({ message: 'Item sudah ada di wishlist' });
+    }
 
     const wishlistItem = await WishlistFood.create({
       wishlist_id: wishlist.id,
