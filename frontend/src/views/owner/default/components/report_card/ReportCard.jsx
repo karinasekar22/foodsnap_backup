@@ -12,11 +12,12 @@ import {
   MdStar,
 } from 'react-icons/md';
 
-const ReportCard = () => {
+const ReportCard = ({totalRestoran, items, wishlist}) => {
   const brandColor = 'green.300';
   const boxBg = 'secondaryGray.300';
   return (
     <Box pt={{ base: '180px', md: '120px', xl: '120px' }}>
+
       <VStack align="flex-start" w="full">
         <Select
           fontSize="sm"
@@ -64,7 +65,7 @@ const ReportCard = () => {
                 />
               }
               name="Total Wishlisht"
-              value="112K"
+              value={wishlist}
             />
             <StaticMini
               startContent={
@@ -104,7 +105,7 @@ const ReportCard = () => {
                 />
               }
               name="Total Menu Aktif"
-              value="154"
+              value={items}
             />
             <StaticMini
               startContent={
@@ -123,7 +124,7 @@ const ReportCard = () => {
                 />
               }
               name="Total Restaurant"
-              value="2"
+              value={totalRestoran}
             />
             </HStack>
           </Box>

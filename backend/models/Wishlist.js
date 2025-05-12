@@ -19,8 +19,8 @@ const Wishlist = sequelize.define('Wishlist', {
   }
 }, {
   tableName: 'wishlist',
+  underscored: true,
   timestamps: false,
 });
-
 
 module.exports = Wishlist;

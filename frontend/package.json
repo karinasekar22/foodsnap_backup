@@ -20,6 +20,8 @@
     "ajv-keywords": "^5.1.0",
     "apexcharts": "3.50.0",
     "axios": "^1.8.4",
+    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "framer-motion": "^11.3.7",
     "npm-force-resolutions": "^0.0.10",
     "react": "19.0.0",

@@ -214,6 +214,27 @@ exports.getMakananById = async (req, res) => {
   }
 };
 
+exports.getTotalMakananByUserId = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const items = await ItemMakanan.findAll({
+      include: [
+        {
+          model: Restoran,
+          where: { user_id: userId },
+          attributes: [],
+        },
+      ],
+    });
+
+    const totalItems = items.length;
+    res.status(200).json({ total: totalItems });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Gagal mengambil total item makanan' });
+  }
+};
 
 
 

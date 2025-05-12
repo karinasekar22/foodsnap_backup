@@ -1,13 +1,19 @@
-import React from "react";
-import MiniCalendar from "components/calendar/MiniCalendar";
-import { Box } from "@chakra-ui/react";
+import MiniCalendar from './MiniCalendar';
+import { Box } from '@chakra-ui/react';
 
-const Calendar = () => {
-    return (
-        <Box maxW="300px" h="auto">
-            <MiniCalendar selectRange={true}/>
-        </Box>
-    );
+const Calendar = ({ dateRange, setDateRange }) => {
+  const handleDateRangeChange = (range) => {
+    setDateRange({
+      startDate: range.selection.startDate,
+      endDate: range.selection.endDate,
+    });
+  };
 
-}
+  return (
+    <Box maxW="300px" h="auto">
+      <MiniCalendar selectRange={true} onChange={handleDateRangeChange} />
+    </Box>
+  );
+};
+
 export default Calendar;
