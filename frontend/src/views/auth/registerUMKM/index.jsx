@@ -10,10 +10,14 @@ import {
   Heading,
   Image,
   Input,
+  InputGroup,
+  InputRightElement,
+  IconButton,
   Link,
   Text,
   useToast,
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from '../../../api/axios';
 import { NavLink, useNavigate } from 'react-router-dom';
 import logo from 'assets/img/auth/logo.png';
@@ -39,6 +43,9 @@ function SignUpUMKM() {
     confirmPassword: '',
     address: '',
   });
+  const [passwordSuggestions, setPasswordSuggestions] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Hook untuk menampilkan notifikasi dan navigasi
   const toast = useToast();
@@ -47,6 +54,7 @@ function SignUpUMKM() {
   // Fungsi untuk memvalidasi input secara real-time
   const validateField = (name, value) => {
     let error = '';
+    let suggestions = '';
     switch (name) {
       case 'username':
         if (value && value.trim().length < 3) {
@@ -61,6 +69,28 @@ function SignUpUMKM() {
       case 'password':
         if (value && value.length < 6) {
           error = 'Password must be at least 6 characters';
+        }
+        // Real-time password strength suggestions
+        if (value) {
+          const suggestionsArray = [];
+          if (value.length < 8) {
+            suggestionsArray.push('at least 8 characters');
+          }
+          if (!/[A-Z]/.test(value)) {
+            suggestionsArray.push('an uppercase letter');
+          }
+          if (!/[a-z]/.test(value)) {
+            suggestionsArray.push('a lowercase letter');
+          }
+          if (!/[0-9]/.test(value)) {
+            suggestionsArray.push('a number');
+          }
+          if (!/[^A-Za-z0-9]/.test(value)) {
+            suggestionsArray.push('a special character');
+          }
+          if (suggestionsArray.length > 0) {
+            suggestions = `For a stronger password, include ${suggestionsArray.join(', ')}.`;
+          }
         }
         break;
       case 'confirmPassword':
@@ -77,6 +107,9 @@ function SignUpUMKM() {
         break;
     }
     setErrors((prev) => ({ ...prev, [name]: error }));
+    if (name === 'password') {
+      setPasswordSuggestions(suggestions);
+    }
     return error === '';
   };
 
@@ -269,7 +302,7 @@ function SignUpUMKM() {
               size="md"
               height="44px"
               borderRadius="md"
-              autoComplete="off" 
+              autoComplete="off"
             />
             <FormErrorMessage fontSize="xs">{errors.username}</FormErrorMessage>
           </FormControl>
@@ -291,7 +324,7 @@ function SignUpUMKM() {
               size="md"
               height="44px"
               borderRadius="md"
-              autoComplete="email" 
+              autoComplete="email"
             />
             <FormErrorMessage fontSize="xs">{errors.email}</FormErrorMessage>
           </FormControl>
@@ -313,7 +346,7 @@ function SignUpUMKM() {
               size="md"
               height="44px"
               borderRadius="md"
-              autoComplete="off" 
+              autoComplete="off"
             />
             <FormErrorMessage fontSize="xs">{errors.address}</FormErrorMessage>
           </FormControl>
@@ -326,18 +359,34 @@ function SignUpUMKM() {
                 *
               </Box>
             </FormLabel>
-            <Input
-              type="password"
-              name="password"
-              placeholder="Create a strong password"
-              value={formData.password}
-              onChange={handleInputChange}
-              size="md"
-              height="44px"
-              borderRadius="md"
-              autoComplete="new-password" 
-            />
+            <InputGroup>
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="Create a strong password"
+                value={formData.password}
+                onChange={handleInputChange}
+                size="md"
+                height="44px"
+                borderRadius="md"
+                autoComplete="new-password"
+              />
+              <InputRightElement height="44px" width="3rem">
+                <IconButton
+                  variant="ghost"
+                  onClick={() => setShowPassword(!showPassword)}
+                  icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  size="sm"
+                />
+              </InputRightElement>
+            </InputGroup>
             <FormErrorMessage fontSize="xs">{errors.password}</FormErrorMessage>
+            {passwordSuggestions && (
+              <Text fontSize="xs" color="yellow.600" mt={1}>
+                {passwordSuggestions}
+              </Text>
+            )}
           </FormControl>
 
           {/* Input untuk konfirmasi kata sandi */}
@@ -348,17 +397,28 @@ function SignUpUMKM() {
                 *
               </Box>
             </FormLabel>
-            <Input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm your password"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              size="md"
-              height="44px"
-              borderRadius="md"
-              autoComplete="new-password" 
-            />
+            <InputGroup>
+              <Input
+                type={showConfirmPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                size="md"
+                height="44px"
+                borderRadius="md"
+                autoComplete="new-password"
+              />
+              <InputRightElement height="44px" width="3rem">
+                <IconButton
+                  variant="ghost"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  icon={showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  size="sm"
+                />
+              </InputRightElement>
+            </InputGroup>
             <FormErrorMessage fontSize="xs">
               {errors.confirmPassword}
             </FormErrorMessage>

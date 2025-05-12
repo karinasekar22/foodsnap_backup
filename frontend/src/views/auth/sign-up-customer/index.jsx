@@ -10,21 +10,23 @@ import {
   Heading,
   Image,
   Input,
+  InputGroup,
+  InputRightElement,
+  IconButton,
   Link,
   Text,
   VStack,
   useToast,
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { NavLink, useNavigate } from 'react-router-dom';
 import axios from '../../../api/axios';
 import logo from 'assets/img/auth/logo.png';
 import registerIllustration from 'assets/img/auth/register-customer.png';
 
-// Komponen utama untuk halaman pendaftaran pelanggan
 function SignUpCustomer() {
-  // State untuk menyimpan data input form dan status loading
   const [formData, setFormData] = useState({
-    fullName: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -32,23 +34,25 @@ function SignUpCustomer() {
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({
-    fullName: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
+  const [passwordSuggestions, setPasswordSuggestions] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Hook untuk menampilkan notifikasi dan navigasi
   const toast = useToast();
   const navigate = useNavigate();
 
-  // Fungsi untuk memvalidasi input secara real-time
   const validateField = (name, value) => {
     let error = '';
+    let suggestions = '';
     switch (name) {
-      case 'fullName':
+      case 'username':
         if (value && value.trim().length < 3) {
-          error = 'Name must be at least 3 characters';
+          error = 'Username must be at least 3 characters';
         }
         break;
       case 'email':
@@ -60,6 +64,28 @@ function SignUpCustomer() {
         if (value && value.length < 6) {
           error = 'Password must be at least 6 characters';
         }
+        // Real-time password strength suggestions
+        if (value) {
+          const suggestionsArray = [];
+          if (value.length < 8) {
+            suggestionsArray.push('at least 8 characters');
+          }
+          if (!/[A-Z]/.test(value)) {
+            suggestionsArray.push('an uppercase letter');
+          }
+          if (!/[a-z]/.test(value)) {
+            suggestionsArray.push('a lowercase letter');
+          }
+          if (!/[0-9]/.test(value)) {
+            suggestionsArray.push('a number');
+          }
+          if (!/[^A-Za-z0-9]/.test(value)) {
+            suggestionsArray.push('a special character');
+          }
+          if (suggestionsArray.length > 0) {
+            suggestions = `For a stronger password, include ${suggestionsArray.join(', ')}.`;
+          }
+        }
         break;
       case 'confirmPassword':
         if (value && value !== formData.password) {
@@ -70,23 +96,22 @@ function SignUpCustomer() {
         break;
     }
     setErrors((prev) => ({ ...prev, [name]: error }));
+    if (name === 'password') {
+      setPasswordSuggestions(suggestions);
+    }
     return error === '';
   };
 
-  // Efek untuk memvalidasi input secara real-time saat nilai berubah
   useEffect(() => {
     Object.keys(formData).forEach((key) => validateField(key, formData[key]));
   }, [formData]);
 
-  // Fungsi untuk menangani perubahan input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Fungsi untuk menangani proses pendaftaran
   const handleRegister = async () => {
-    // Validasi semua input sebelum mengirim data
     const isValid = Object.keys(formData).every((key) =>
       validateField(key, formData[key])
     );
@@ -114,9 +139,8 @@ function SignUpCustomer() {
 
     setIsLoading(true);
     try {
-      // Kirim data pendaftaran ke server
       await axios.post('/auth/register', {
-        fullName: formData.fullName,
+        username: formData.username,
         email: formData.email,
         password: formData.password,
       });
@@ -129,13 +153,14 @@ function SignUpCustomer() {
         isClosable: true,
       });
 
-      // Arahkan ke halaman admin setelah berhasil
       setTimeout(() => navigate('/admin/default'), 3000);
     } catch (err) {
-      // Tangani error dari server
       toast({
         title: 'Registration Failed',
-        description: err.response?.data?.message || 'Something went wrong',
+        description:
+          err.response?.data?.message === 'Username, email, dan password wajib diisi'
+            ? 'Please fill in all required fields: username, email, and password.'
+            : err.response?.data?.message || 'Something went wrong',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -152,7 +177,6 @@ function SignUpCustomer() {
       direction={{ base: 'column', lg: 'row' }}
       overflow="hidden"
     >
-      {/* Bagian kiri: Formulir pendaftaran */}
       <Flex
         flex="1"
         direction="column"
@@ -162,7 +186,6 @@ function SignUpCustomer() {
         bg="white"
         position="relative"
       >
-        {/* Logo aplikasi */}
         <Box position="absolute" top="4" left="5">
           <Image
             src={logo}
@@ -172,7 +195,6 @@ function SignUpCustomer() {
           />
         </Box>
 
-        {/* Konten utama formulir */}
         <Box maxW="550px" mx="auto" width="100%" mt={{ base: 20, md: 24 }}>
           <Heading
             fontSize={{ base: 'xl', md: '2xl' }}
@@ -192,25 +214,24 @@ function SignUpCustomer() {
             of food lovers on FoodSnap!
           </Text>
 
-          {/* Input untuk nama lengkap */}
-          <FormControl mb={4} isInvalid={errors.fullName}>
+          <FormControl mb={4} isInvalid={errors.username}>
             <FormLabel fontSize="sm" color="gray.700" mb={1}>
-              Full Name <Box as="span" color="red.500">*</Box>
+              Username <Box as="span" color="red.500">*</Box>
             </FormLabel>
             <Input
               type="text"
-              name="fullName"
-              placeholder="Enter your full name"
-              value={formData.fullName}
+              name="username"
+              placeholder="Enter your username"
+              value={formData.username}
               onChange={handleInputChange}
               size="md"
               height="44px"
               borderRadius="md"
+              autoComplete="off"
             />
-            <FormErrorMessage fontSize="xs">{errors.fullName}</FormErrorMessage>
+            <FormErrorMessage fontSize="xs">{errors.username}</FormErrorMessage>
           </FormControl>
 
-          {/* Input untuk email */}
           <FormControl mb={4} isInvalid={errors.email}>
             <FormLabel fontSize="sm" color="gray.700" mb={1}>
               Email <Box as="span" color="red.500">*</Box>
@@ -224,49 +245,76 @@ function SignUpCustomer() {
               size="md"
               height="44px"
               borderRadius="md"
+              autoComplete="email"
             />
             <FormErrorMessage fontSize="xs">{errors.email}</FormErrorMessage>
           </FormControl>
 
-          {/* Input untuk kata sandi */}
           <FormControl mb={4} isInvalid={errors.password}>
             <FormLabel fontSize="sm" color="gray.700" mb={1}>
               Password <Box as="span" color="red.500">*</Box>
             </FormLabel>
-            <Input
-              type="password"
-              name="password"
-              placeholder="Create a strong password"
-              value={formData.password}
-              onChange={handleInputChange}
-              size="md"
-              height="44px"
-              borderRadius="md"
-            />
+            <InputGroup>
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="Create a strong password"
+                value={formData.password}
+                onChange={handleInputChange}
+                size="md"
+                height="44px"
+                borderRadius="md"
+                autoComplete="new-password"
+              />
+              <InputRightElement height="44px" width="3rem">
+                <IconButton
+                  variant="ghost"
+                  onClick={() => setShowPassword(!showPassword)}
+                  icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  size="sm"
+                />
+              </InputRightElement>
+            </InputGroup>
             <FormErrorMessage fontSize="xs">{errors.password}</FormErrorMessage>
+            {passwordSuggestions && (
+              <Text fontSize="xs" color="yellow.600" mt={1}>
+                {passwordSuggestions}
+              </Text>
+            )}
           </FormControl>
 
-          {/* Input untuk konfirmasi kata sandi */}
           <FormControl mb={5} isInvalid={errors.confirmPassword}>
             <FormLabel fontSize="sm" color="gray.700" mb={1}>
               Confirm Password <Box as="span" color="red.500">*</Box>
             </FormLabel>
-            <Input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm your password"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              size="md"
-              height="44px"
-              borderRadius="md"
-            />
+            <InputGroup>
+              <Input
+                type={showConfirmPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                size="md"
+                height="44px"
+                borderRadius="md"
+                autoComplete="new-password"
+              />
+              <InputRightElement height="44px" width="3rem">
+                <IconButton
+                  variant="ghost"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  icon={showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  size="sm"
+                />
+              </InputRightElement>
+            </InputGroup>
             <FormErrorMessage fontSize="xs">
               {errors.confirmPassword}
             </FormErrorMessage>
           </FormControl>
 
-          {/* Checkbox untuk syarat dan ketentuan */}
           <Box mb={5}>
             <Checkbox
               colorScheme="green"
@@ -278,7 +326,6 @@ function SignUpCustomer() {
             </Checkbox>
           </Box>
 
-          {/* Tombol untuk mendaftar */}
           <Button
             isLoading={isLoading}
             color="white"
@@ -294,7 +341,6 @@ function SignUpCustomer() {
             Start Snapping!
           </Button>
 
-          {/* Tombol kembali ke halaman utama */}
           <Button
             isLoading={isLoading}
             color="#23653B"
@@ -311,7 +357,6 @@ function SignUpCustomer() {
             Back to Home
           </Button>
 
-          {/* Tautan untuk pendaftaran bisnis */}
           <Text fontSize="xs" textAlign="center" color="gray.600">
             Want to register your food business instead?{' '}
             <Link as={NavLink} to="/auth/registerUMKM" color="green.600" fontWeight="medium">
@@ -321,7 +366,6 @@ function SignUpCustomer() {
         </Box>
       </Flex>
 
-      {/* Bagian kanan: Ilustrasi (hanya tampil di layar besar) */}
       <Box
         flex="1"
         bg="#23653B"
@@ -342,7 +386,7 @@ function SignUpCustomer() {
               fontSize={{ md: 'xl', lg: '2xl' }}
               mb={3}
               textAlign={{ base: 'center', lg: 'left' }}
-              mt={{ base: 4, lg: 2 }}
+              mt={{ base: 4, lg: '2' }}
             >
               Your Foodie Adventure Awaits!
             </Heading>
