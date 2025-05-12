@@ -18,9 +18,9 @@ router.post('/add', verifyToken, wishlistController.addToWishlist);
 
 /**
  * [DELETE] Hapus item dari wishlist
- * Body: { item_makanan_id }
+ * Body: { id }
  * Endpoint: /api/wishlist/remove
  */
-router.delete('/remove/:item_makanan_id', verifyToken, wishlistController.removeFromWishlist);
+router.delete('/remove/:id', verifyToken, wishlistController.removeFromWishlist);
 
 module.exports = router;
