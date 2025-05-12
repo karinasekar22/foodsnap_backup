@@ -32,7 +32,6 @@ const CustomerWishlistPage = () => {
 
     try {
       await axios.delete(`${process.env.REACT_APP_API_BACKEND}/api/wishlist/remove/${itemId}`);
-      
       toast({
         title: 'Berhasil dihapus.',
         description: 'Item dihapus dari wishlist.',
@@ -42,7 +41,7 @@ const CustomerWishlistPage = () => {
       });
 
       // Refresh data wishlist setelah hapus
-      setWishlistItems(prevItems => prevItems.filter(item => item.ItemMakanan?.id !== itemId));
+      setWishlistItems(prevItems => prevItems.filter(item => item.id !== itemId));
     } catch (error) {
       console.error('Gagal menghapus item:', error);
       toast({
@@ -116,7 +115,7 @@ const CustomerWishlistPage = () => {
                       colorScheme="red"
                       variant="outline"
                       ml={3}
-                      onClick={() => handleRemove(item.ItemMakanan?.id)}
+                      onClick={() => handleRemove(item.id)}
                     >
                       Hapus dari Wishlist
                     </Button>
