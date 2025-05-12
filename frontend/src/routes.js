@@ -35,6 +35,7 @@ import AnalyticalPage from 'views/customer/default/components/analytical_page';
 import CustomerCategoryPage from 'views/customer/default/components/CustomerCategoryPage';
 import CustomerWishlistPage from 'views/customer/default/components/CustomerWishlistPage';
 import ManageRestorant from 'views/owner/restaurant';
+import ManageItemFood from 'views/owner/itemMakanan';
 
 const routes = [
   {
@@ -177,7 +178,7 @@ const routes = [
     layout: '/owner',
     path: '/products',
     icon: <Icon as={MdRiceBowl} width="20px" height="20px" color="inherit" />,
-    component: <OwnerDashboard />,
+    component: <ManageItemFood />,
   },
 
   {
