@@ -101,87 +101,93 @@ export const barChartDataDailyTraffic = [
     },
   };
   
-  export const lineChartDataTotalSpent = [
-    {
-      name: "Revenue",
-      data: [50, 64, 48, 66, 49, 68],
-    },
-    {
-      name: "Profit",
-      data: [30, 40, 24, 46, 20, 46],
-    },
-  ];
+ // contoh data hasil fetch dari backend:
+export const lineChartDataTotalSpent = [
+  {
+    name: "Nasi Goreng",
+    data: [
+      { x: "2025-05-01", y: 4 },
+      { x: "2025-05-02", y: 3 },
+    ],
+  },
+  {
+    name: "Ayam Bakar",
+    data: [
+      { x: "2025-05-01", y: 2 },
+      { x: "2025-05-03", y: 1 },
+    ],
+  },
+];
+
   
   export const lineChartOptionsTotalSpent = {
-    chart: {
-      toolbar: {
-        show: false,
-      },
-      dropShadow: {
-        enabled: true,
-        top: 13,
-        left: 0,
-        blur: 10,
-        opacity: 0.1,
-        color: "#08704E",
-      },
-    },
-    colors: ["#08704E", "#01B574"],
-    markers: {
-      size: 0,
-      colors: "white",
-      strokeColors: "#7551FF",
-      strokeWidth: 3,
-      strokeOpacity: 0.9,
-      strokeDashArray: 0,
-      fillOpacity: 1,
-      discrete: [],
-      shape: "circle",
-      radius: 2,
-      offsetX: 0,
-      offsetY: 0,
-      showNullDataPoints: true,
-    },
-    tooltip: {
-      theme: "dark",
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: "smooth",
-      type: "line",
-    },
-    xaxis: {
-      type: "numeric",
-      categories: ["SEP", "OCT", "NOV", "DEC", "JAN", "FEB"],
-      labels: {
-        style: {
-          colors: "#A3AED0",
-          fontSize: "12px",
-          fontWeight: "500",
-        },
-      },
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
-    },
-    yaxis: {
+  chart: {
+    toolbar: {
       show: false,
     },
-    legend: {
-      show: false,
+    dropShadow: {
+      enabled: true,
+      top: 13,
+      left: 0,
+      blur: 10,
+      opacity: 0.1,
+      color: "#08704E",
     },
-    grid: {
-      show: false,
-      column: {
-        color: ["#08704E", "#01B574"],
-        opacity: 0.5,
+  },
+  colors: ["#08704E", "#01B574", "#095c09", "#095c09"],
+  markers: {
+    size: 4,
+    colors: "white",
+    strokeColors: "#7551FF",
+    strokeWidth: 3,
+  },
+  tooltip: {
+    theme: "dark",
+    x: {
+      format: "yyyy-MM-dd",
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    curve: "smooth",
+    type: "line",
+  },
+  xaxis: {
+    type: "category",
+    labels: {
+      rotate: -45,
+      style: {
+        colors: "#A3AED0",
+        fontSize: "12px",
+        fontWeight: "500",
       },
     },
-    color: ["#08704E", "#01B574"],
-  };
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+  },
+  yaxis: {
+    labels: {
+      style: {
+        colors: "#CBD5E0",
+        fontSize: "12px",
+      },
+    },
+  },
+  legend: {
+    show: true,
+    position: "top",
+    horizontalAlign: "left",
+  },
+  grid: {
+    show: true,
+    borderColor: "#E2E8F0",
+  },
+};
+
   

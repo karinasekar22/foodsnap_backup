@@ -10,6 +10,8 @@ router.post('/', verifyToken, uploadProduk.single('photo'), itemController.creat
 // Get Data  Berdasarkan Restoran 
 router.get('/itemMakananAll', itemController.getAllItems);
 
+router.get('/item-makanan/user', verifyToken, itemController.getTotalMakananByUserId);
+
 router.get('/restoran/:restoran_id', itemController.getItemsByRestoran);
 
 
@@ -27,7 +29,6 @@ router.delete('/:id', verifyToken, itemController.deleteItem);
 router.get('/item-makanan/:id', itemController.getMakananById);
 
 router.get('/item-makanan', itemController.getAllItem);
-
 
 
 

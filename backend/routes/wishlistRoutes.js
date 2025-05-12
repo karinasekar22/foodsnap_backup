@@ -23,4 +23,12 @@ router.post('/add', verifyToken, wishlistController.addToWishlist);
  */
 router.delete('/remove/:item_makanan_id', verifyToken, wishlistController.removeFromWishlist);
 
+/**
+ * [GET] jumlah wishlist milik user umkm
+ * Endpoint: /api/wishlist/top_item
+ */
+router.get('/top_item', verifyToken, wishlistController.getTopWishlist);
+
+router.get('/total-wishlist', verifyToken, wishlistController.getTotalUMKMWishlistbyUserId);
+
 module.exports = router;
