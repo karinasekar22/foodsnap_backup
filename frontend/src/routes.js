@@ -24,7 +24,6 @@ import SignUpUmkm from 'views/auth/registerUMKM';
 import SignUpCustomer from 'views/auth/sign-up-customer';
 import SignUpRole from 'views/auth/sign-up-role';
 
-
 // User Imports
 import Homepage from 'views/user/homepage';
 import DiscoverPage from 'views/user/discoverpage';
@@ -36,6 +35,9 @@ import CustomerCategoryPage from 'views/customer/default/components/CustomerCate
 import CustomerWishlistPage from 'views/customer/default/components/CustomerWishlistPage';
 import ManageRestorant from 'views/owner/restaurant';
 import ManageItemFood from 'views/owner/itemMakanan';
+
+// page not found
+import PageNotFound from 'views/not-found/PageNotFound';
 
 const routes = [
   {
@@ -203,7 +205,15 @@ const routes = [
     path: '/discoverpage',
     icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
     component: <DiscoverPage />,
-  }
+  },
+
+  {
+    name: 'Page Not Found',
+    layout: '/user',
+    path: '/not-found',
+    icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
+    component: <PageNotFound />,
+  },
 ];
 
 export default routes;

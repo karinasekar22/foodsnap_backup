@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Flex, Text, Button, Image, Box, IconButton, Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, Stack, useDisclosure, Avatar, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, VStack, HStack } from '@chakra-ui/react';
+import { Flex, Text, Button, Image, Box, IconButton, Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, Stack, useDisclosure, Avatar, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, VStack, HStack, Center } from '@chakra-ui/react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { HamburgerIcon, BellIcon } from '@chakra-ui/icons';
 import { FaUserAlt, FaClipboardList, FaBookmark, FaUsers, FaHeart, FaCog, FaHeadset, FaSignOutAlt } from 'react-icons/fa';
@@ -16,37 +16,38 @@ const COLORS = {
 const SIZES = {
   buttonWidth: '110px',
   buttonHeight: '33px',
+  mobileButtonWidth: '160px', 
   logoHeight: { base: '30px', md: '30px' }
 };
 
 // Daftar link navigasi
 const NAV_LINKS = [
   { to: '/user/', text: 'Home' },
-  { to: '/user/discover', text: 'Discover' },
-  { to: '/user/categories', text: 'Categories' },
-  { to: '/user/add-review', text: 'Add Review' }
+  { to: '/user/discover', text: 'Discover', protected: true },
+  { to: '/user/categories', text: 'Categories', protected: true },
+  { to: '/user/add-review', text: 'Add Review', protected: true }
 ];
 
 // Menu profil untuk dropdown
 const PROFILE_MENU = [
-  { icon: FaUserAlt, text: 'My Profile', to: '/user/profile' },
-  { icon: FaClipboardList, text: 'My Reviews', to: '/user/reviews' },
-  { icon: FaBookmark, text: 'My Whislist', to: '/user/wishlist' },
-  { icon: FaUsers, text: 'Following', to: '/user/following' },
-  { icon: FaHeart, text: 'Favorites', to: '/user/favorites' },
-  { icon: FaCog, text: 'Account Settings', to: '/user/settings' },
+  { icon: FaUserAlt, text: 'My Profile', to: '/user/profile', protected: true },
+  { icon: FaClipboardList, text: 'My Reviews', to: '/user/reviews', protected: true },
+  { icon: FaBookmark, text: 'My Whislist', to: '/user/wishlist', protected: true },
+  { icon: FaUsers, text: 'Following', to: '/user/following', protected: true },
+  { icon: FaHeart, text: 'Favorites', to: '/user/favorites', protected: true },
+  { icon: FaCog, text: 'Account Settings', to: '/user/settings', protected: true },
   { icon: FaHeadset, text: 'Help & Support', to: '/help' },
   { icon: FaSignOutAlt, text: 'Log Out', to: '/auth/logout', isLogout: true }
 ];
 
 // Komponen untuk tombol login dan register
-const AuthButton = ({ to, text, isSolid, onClick }) => (
+const AuthButton = ({ to, text, isSolid, onClick, isMobile }) => (
   <Button
     as={NavLink}
     to={to}
     variant={isSolid ? 'solid' : 'outline'}
     size="md"
-    width={SIZES.buttonWidth}
+    width={isMobile ? SIZES.mobileButtonWidth : SIZES.buttonWidth}
     height={SIZES.buttonHeight}
     bg={isSolid ? COLORS.primary : 'transparent'}
     color={isSolid ? COLORS.white : COLORS.primary}
@@ -65,85 +66,123 @@ const AuthButton = ({ to, text, isSolid, onClick }) => (
 );
 
 // Komponen untuk item navigasi (digunakan di desktop dan mobile)
-const NavItem = ({ to, text, isMobile, onClick }) => (
-  <NavLink
-    to={to}
-    style={{ width: isMobile ? '100%' : 'auto' }}
-    onClick={onClick}
-  >
-    {({ isActive }) => (
-      <Box
-        position="relative"
+const NavItem = ({ to, text, isMobile, onClick, isProtected, loggedInUser }) => {
+  const navigate = useNavigate();
+
+  const handleClick = (e) => {
+    if (isProtected && !loggedInUser) {
+      e.preventDefault();
+      navigate('/user/not-found'); 
+    }
+    onClick?.();
+  };
+
+  return (
+    <NavLink
+      to={to}
+      style={{ width: isMobile ? '100%' : 'auto' }}
+      onClick={handleClick}
+    >
+      {({ isActive }) => (
+        <Box
+          position="relative"
+          role="group"
+          py={isMobile ? 2 : 0}
+          px={isMobile ? 3 : 0}
+          textAlign={isMobile ? "center" : "left"}
+          _hover={isMobile ? { bg: COLORS.hoverBg } : {}}
+        >
+          <Text
+            color={isMobile && isActive ? COLORS.primary : COLORS.text}
+            fontFamily="Poppins, sans-serif"
+            fontWeight="bold"
+          >
+            {text}
+          </Text>
+          {!isMobile && (
+            <Box
+              position="absolute"
+              bottom="-2px"
+              left="50%"
+              width={isActive ? "60%" : "0%"}
+              height="2px"
+              bg={COLORS.primary}
+              transform="translateX(-50%)"
+              _groupHover={{ width: "60%" }}
+              transition="width 0.3s ease-in-out"
+              borderRadius="full"
+            />
+          )}
+          {isMobile && isActive && (
+            <Box
+              position="absolute"
+              bottom="0"
+              left="50%"
+              width="60px"
+              height="2px"
+              bg={COLORS.primary}
+              transform="translateX(-50%)"
+              borderRadius="full"
+            />
+          )}
+        </Box>
+      )}
+    </NavLink>
+  );
+};
+
+// Komponen untuk item menu profil dengan efek hover warna primary
+const ProfileMenuItem = ({ icon: Icon, text, to, onClick, isLogout, handleLogout, isProtected, loggedInUser }) => {
+  const navigate = useNavigate();
+
+  const handleClick = (e) => {
+    if (isProtected && !loggedInUser) {
+      e.preventDefault();
+      navigate('/user/not-found'); 
+    }
+    if (isLogout) {
+      handleLogout();
+    }
+    onClick?.();
+  };
+
+  return (
+    <Box
+      as={isLogout ? 'button' : NavLink}
+      to={isLogout ? undefined : to}
+      style={{ width: '100%' }}
+      onClick={handleClick}
+    >
+      <HStack
+        py={2}
+        px={4}
+        _hover={{ bg: COLORS.hoverBg }}
+        borderRadius="md"
+        transition="all 0.2s ease-in-out"
         role="group"
-        py={isMobile ? 2 : 0}
-        px={isMobile ? 3 : 0}
-        _hover={isMobile ? { bg: COLORS.hoverBg } : {}}
       >
-        <Text
-          color={isMobile && isActive ? COLORS.primary : COLORS.text}
-          fontFamily="Poppins, sans-serif"
-          fontWeight="bold"
+        <Box 
+          color={COLORS.text} 
+          fontSize="sm"
+          _groupHover={{ color: COLORS.primary }}
+          transition="color 0.2s ease-in-out"
+        >
+          <Icon />
+        </Box>
+        <Text 
+          color={COLORS.text} 
+          fontSize="sm"
+          _groupHover={{ color: COLORS.primary }}
+          transition="color 0.2s ease-in-out"
         >
           {text}
         </Text>
-        {!isMobile && (
-          <Box
-            position="absolute"
-            bottom="-2px"
-            left="50%"
-            width={isActive ? "60%" : "0%"}
-            height="2px"
-            bg={COLORS.primary}
-            transform="translateX(-50%)"
-            _groupHover={{ width: "60%" }}
-            transition="width 0.3s ease-in-out"
-            borderRadius="full"
-          />
-        )}
-      </Box>
-    )}
-  </NavLink>
-);
-
-// Komponen untuk item menu profil dengan efek hover warna primary
-const ProfileMenuItem = ({ icon: Icon, text, to, onClick, isLogout, handleLogout }) => (
-  <Box
-    as={isLogout ? 'button' : NavLink}
-    to={isLogout ? undefined : to}
-    style={{ width: '100%' }}
-    onClick={isLogout ? handleLogout : onClick}
-  >
-    <HStack
-      py={2}
-      px={4}
-      _hover={{ bg: COLORS.hoverBg }}
-      borderRadius="md"
-      transition="all 0.2s ease-in-out"
-      role="group"
-    >
-      <Box 
-        color={COLORS.text} 
-        fontSize="sm"
-        _groupHover={{ color: COLORS.primary }}
-        transition="color 0.2s ease-in-out"
-      >
-        <Icon />
-      </Box>
-      <Text 
-        color={COLORS.text} 
-        fontSize="sm"
-        _groupHover={{ color: COLORS.primary }}
-        transition="color 0.2s ease-in-out"
-      >
-        {text}
-      </Text>
-    </HStack>
-  </Box>
-);
+      </HStack>
+    </Box>
+  );
+};
 
 const Navbar = () => {
-  // State untuk mendeteksi apakah halaman di-scroll
-  // Hook untuk mengontrol buka/tutup drawer (menu mobile)
   const [scrolled, setScrolled] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -159,7 +198,6 @@ const Navbar = () => {
     navigate('/auth/sign-in');
   };
 
-  // Efek untuk mendeteksi scroll dan mengubah gaya navbar
   useEffect(() => {
     const userSession = sessionStorage.getItem('user');
     if (userSession) {
@@ -179,7 +217,6 @@ const Navbar = () => {
   }, []);
 
   return (
-    // Kontainer utama navbar dengan posisi sticky
     <Flex
       as="nav"
       align="center"
@@ -194,7 +231,6 @@ const Navbar = () => {
       fontFamily="Poppins, sans-serif"
       transition="all 0.3s ease"
     >
-      {/* Logo aplikasi */}
       <Image
         src={logoImage}
         alt="FoodSnap Logo"
@@ -212,7 +248,13 @@ const Navbar = () => {
         display={{ base: 'none', md: 'flex' }}
       >
         {NAV_LINKS.map((link) => (
-          <NavItem key={link.to} to={link.to} text={link.text} />
+          <NavItem 
+            key={link.to} 
+            to={link.to} 
+            text={link.text} 
+            isProtected={link.protected} 
+            loggedInUser={loggedInUser} 
+          />
         ))}
       </Flex>
 
@@ -282,6 +324,8 @@ const Navbar = () => {
                           isLogout={item.isLogout}
                           handleLogout={handleLogout}
                           onClick={onProfileClose}
+                          isProtected={item.protected}
+                          loggedInUser={loggedInUser}
                         />
                       ))}
                     </VStack>
@@ -312,7 +356,7 @@ const Navbar = () => {
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerBody pt={10}>
-            <Stack spacing={4}>
+            <VStack spacing={4} align="center" mb={6}>
               {NAV_LINKS.map((link) => (
                 <NavItem
                   key={link.to}
@@ -320,59 +364,73 @@ const Navbar = () => {
                   text={link.text}
                   isMobile
                   onClick={onClose}
+                  isProtected={link.protected}
+                  loggedInUser={loggedInUser}
                 />
               ))}
-              <Box pt={5}>
-                {loggedInUser ? (
-                  <Flex direction="column" gap={2}>
-                    <HStack spacing={4} mb={4}>
-                      <IconButton
-                        aria-label="Notifications"
-                        icon={<BellIcon w={6} h={6} />}
-                        variant="ghost"
-                        color={COLORS.text}
-                        _hover={{ color: COLORS.primary }}
-                        transition="color 0.2s ease-in-out"
-                      />
-                      <Avatar 
-                        size="sm" 
-                        src={loggedInUser?.avatarUrl || '/api/placeholder/40/40'} //nanti diganti dengan API
-                        border="3px solid"
-                        borderColor={COLORS.primary}
-                      />
-                      <Text fontWeight="medium">Hi, {loggedInUser?.username || 'User'}!</Text>
-                    </HStack>
-                    <VStack spacing={1} align="stretch">
-                      {PROFILE_MENU.map((item, index) => (
-                        <ProfileMenuItem
-                          key={index}
-                          icon={item.icon}
-                          text={item.to}
-                          to={item.to}
-                          isLogout={item.isLogout}
-                          handleLogout={handleLogout}
-                          onClick={onClose}
-                        />
-                      ))}
-                    </VStack>
-                  </Flex>
-                ) : (
-                  <>
-                    <AuthButton
-                      to="/auth/sign-in"
-                      text="Login"
-                      onClick={onClose}
+            </VStack>
+            
+            <Box pt={5}>
+              {loggedInUser ? (
+                <Flex direction="column" gap={2}>
+                  <HStack spacing={4} mb={4} justify="center">
+                    <IconButton
+                      aria-label="Notifications"
+                      icon={<BellIcon w={6} h={6} />}
+                      variant="ghost"
+                      color={COLORS.text}
+                      _hover={{ color: COLORS.primary }}
+                      transition="color 0.2s ease-in-out"
                     />
-                    <AuthButton
-                      to="/auth/sign-up-role"
-                      text="Get Started"
-                      isSolid
-                      onClick={onClose}
+                    <Avatar 
+                      size="sm" 
+                      src={loggedInUser?.avatarUrl || '/api/placeholder/40/40'}
+                      border="3px solid"
+                      borderColor={COLORS.primary}
                     />
-                  </>
-                )}
-              </Box>
-            </Stack>
+                    <Text fontWeight="medium">Hi, {loggedInUser?.username || 'User'}!</Text>
+                  </HStack>
+                  <VStack spacing={1} align="stretch">
+                    {PROFILE_MENU.map((item, index) => (
+                      <ProfileMenuItem
+                        key={index}
+                        icon={item.icon}
+                        text={item.text}
+                        to={item.to}
+                        isLogout={item.isLogout}
+                        handleLogout={handleLogout}
+                        onClick={onClose}
+                        isProtected={item.protected}
+                        loggedInUser={loggedInUser}
+                      />
+                    ))}
+                  </VStack>
+                </Flex>
+              ) : (
+                <VStack spacing={4} align="center" width="100%">
+                  <AuthButton
+                    to="/auth/sign-in"
+                    text="Login"
+                    onClick={onClose}
+                    isMobile={true}
+                  />
+                  
+                  <Center width="100%" py={2}>
+                    <Text color={COLORS.text} fontSize="sm" fontWeight="medium">
+                      ----or----
+                    </Text>
+                  </Center>
+                  
+                  <AuthButton
+                    to="/auth/sign-up-role"
+                    text="Get Started"
+                    isSolid
+                    onClick={onClose}
+                    isMobile={true}
+                  />
+                </VStack>
+              )}
+            </Box>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
