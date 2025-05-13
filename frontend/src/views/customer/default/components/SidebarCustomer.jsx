@@ -1,12 +1,13 @@
 import React from 'react';
 import { VStack, HStack, Icon, Text } from '@chakra-ui/react';
-import { FaHome, FaSearch, FaHeart, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaSearch, FaHeart, FaSignOutAlt, FaBars } from 'react-icons/fa';
 import { useNavigate, useLocation, matchPath } from 'react-router-dom';
 
 const navItems = [
   { icon: FaHome, label: "Dashboard", path: "/customer/default" },
   { icon: FaSearch, label: "Discover", path: "/" },
   { icon: FaHeart, label: "Wishlist", path: "/customer/wishlist" },
+  { icon: FaBars, label: "Analytical", path: "/customer/analytical" },
   { icon: FaSignOutAlt, label: "Logout", path: "/logout" }, // Tambahkan Logout
 ];
 

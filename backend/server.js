@@ -24,12 +24,13 @@ app.use('/api/auth', require('./routes/auth')); // Authentification
 app.use('/api/restoran', require('./routes/restoran')); // Toko/ UMKM (Resto)
 app.use('/api/produk', require('./routes/itemMakanan')); // Produk / Item
 app.use('/api/comments', require('./routes/comment')); // Comment And Review
-
 app.use('/api/comments-detail', require('./routes/commentDetail')); // Comment And Replies
 app.use('/api/wishlist', require('./routes/wishlistRoutes'));
+
 // Serve static files dari folder uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/api/kategori', require('./routes/kategori')); // Tambahkan route kategori
+app.use('/api/kategori', require('./routes/kategori'));
+app.use('/api/nutrition', require('./routes/nutrition'));
 
 
 const PORT = process.env.PORT || 5000;

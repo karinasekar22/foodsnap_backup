@@ -1,10 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
 import ReactApexChart from "react-apexcharts";
 
-class PieChart extends React.Component {
+class PieChart extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       chartData: [],
       chartOptions: {},

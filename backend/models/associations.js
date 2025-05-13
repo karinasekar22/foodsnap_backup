@@ -8,6 +8,7 @@ const Kategori = require("./kategori");
 const LocationRestaurant = require("./LocationRestaurant");
 const Comment = require("./Comment");
 const CommentDetail = require("./CommentDetail");
+const Nutrition = require("./Nutrition");
 
 // Relasi Wishlist → WishlistFood
 Wishlist.hasMany(WishlistFood, { foreignKey: "wishlist_id" });
@@ -84,3 +85,6 @@ ItemMakanan.hasMany(Comment, { foreignKey: "item_makanan_id" });
 // (Opsional) Jika kamu ingin support balasan komentar:
 //Comment.hasMany(Comment, { as: 'replies', foreignKey: 'parent_id' });
 //Comment.belongsTo(Comment, { as: 'parent', foreignKey: 'parent_id' });
+ItemMakanan.hasOne(Nutrition, {foreignKey: 'item_makanan_id'});
+
+Nutrition.belongsTo(ItemMakanan, {foreignKey: 'item_makanan_id'});

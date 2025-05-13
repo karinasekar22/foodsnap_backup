@@ -141,7 +141,7 @@ const ProdukDetail = () => {
       >
         <VStack spacing={6} align="stretch">
           <ProdukHeader data={produk} />
-          <ProdukDeskripsi caption={produk.caption || 'Tidak ada deskripsi.'} />
+          <ProdukDeskripsi caption={produk.caption || 'Tidak ada deskripsi.'}  description={produk.description || 'Tidak ada deskripsi.'} />
 
           <Divider borderColor="gray.300" />
 

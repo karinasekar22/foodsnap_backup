@@ -1,10 +1,4 @@
-export const FoodIntake = [
-    {
-      name: "Intake",
-      data: [20, 30, 40, 20, 45, 50, 30],
-    },
-  ];
-  
+
   export const ChartOption = {
     chart: {
       toolbar: {
@@ -25,8 +19,8 @@ export const FoodIntake = [
       theme: "dark",
     },
     xaxis: {
-      categories: ["Calorie", "Glutten", "Fat", "Vitamin", "Protein", "Carbo", "Serat"],
-      show: false,
+      categories: ["Calorie", "Sugar", "Fat", "Protein", "Carbo", "Fiber"],
+      show: true,
       labels: {
         show: true,
         style: {
@@ -102,7 +96,7 @@ export const FoodIntake = [
   };
 
   export const pieChartOptions = {
-    labels: ["Main Course", "Dessert", "Junk Food", "Sea Food", "Coffe", "Soft Drink"],
+    labels: [""],
     colors: ["#23673c", "#32753e", "#82ae3b", "#9bbb39", "#d3d435", "#f2df36"],
     chart: {
       width: 250,
@@ -142,4 +136,4 @@ export const FoodIntake = [
     },
   };
   
-  export const pieChartData = [7, 3, 22, 31, 11, 16];
+ 

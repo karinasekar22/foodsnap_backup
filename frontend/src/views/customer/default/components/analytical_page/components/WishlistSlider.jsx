@@ -26,10 +26,9 @@ const WishlistSlider = ({ children }) => {
     updateScrollState();
     const el = sliderRef.current;
     if (!el) return;
-
     el.addEventListener('scroll', updateScrollState);
     return () => el.removeEventListener('scroll', updateScrollState);
-  }, []);
+  }, [children]);
 
   return (
     <Box position="relative" w="full">
@@ -58,11 +57,11 @@ const WishlistSlider = ({ children }) => {
         px={12}
         whiteSpace="nowrap"
         sx={{
-            scrollbarWidth: 'none', // Firefox
-            '&::-webkit-scrollbar': {
-              display: 'none', // Chrome, Safari, Edge
-            },
-          }}
+          scrollbarWidth: 'none', // Firefox
+          '&::-webkit-scrollbar': {
+            display: 'none', // Chrome, Safari, Edge
+          },
+        }}
       >
         <HStack spacing={4} minW="max-content">
           {children}
@@ -81,7 +80,7 @@ const WishlistSlider = ({ children }) => {
         bg="whiteAlpha.700"
         boxShadow="md"
         rounded="full"
-        _hover={{ bg: 'hiteAlpha.900' }}
+        _hover={{ bg: 'whiteAlpha.900' }}
       />
     </Box>
   );

@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { FaSearch } from 'react-icons/fa';
 
-const ProdukDeskripsi = ({ caption }) => {
+const ProdukDeskripsi = ({ caption, description }) => {
   return (
     <Box
       bg="white"
@@ -20,8 +20,8 @@ const ProdukDeskripsi = ({ caption }) => {
       mx="auto"
       textAlign="left"
       mt={0}
-      px={{ base: 12, sm: 24 }} // Tambahkan padding horizontal
-      py={{ base: 0, sm: 5 }} // Opsional: padding atas-bawah juga biar lega
+      px={{ base: 12, sm: 24 }} // padding kanan kiri
+      py={{ base: 0, sm: 5 }} // padding atas-bawah juga biar lega
     >
       <Heading
         as="h1"
@@ -39,7 +39,7 @@ const ProdukDeskripsi = ({ caption }) => {
         mb={3}
         color="gray.800"
       >
-        NO rice, NO guilt, NO description y'all✨
+        {description}
       </Text>
 
       <Text

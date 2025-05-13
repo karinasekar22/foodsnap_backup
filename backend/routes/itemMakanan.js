@@ -10,6 +10,10 @@ router.post('/', verifyToken, uploadProduk.single('photo'), itemController.creat
 // Get Data  Berdasarkan Restoran 
 router.get('/itemMakananAll', itemController.getAllItems);
 
+router.post('/analytic', verifyToken, itemController.getNutritionFromWishlist);
+
+router.post('/analytic-pie', verifyToken, itemController.getKategoribyIMId);
+
 router.get('/item-makanan/user', verifyToken, itemController.getTotalMakananByUserId);
 
 router.get('/restoran/:restoran_id', itemController.getItemsByRestoran);

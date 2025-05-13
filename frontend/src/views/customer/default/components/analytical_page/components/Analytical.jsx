@@ -1,66 +1,87 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import { Box, Flex, Text, useColorModeValue, Spinner } from '@chakra-ui/react';
+import BarChart from 'components/charts/BarChart';
+import Card from 'components/card/Card.js';
+import { ChartOption } from './variables/charts';
+import axios from 'api/axios';
 
-import { Box, Flex, Icon, Text, useColorModeValue } from "@chakra-ui/react";
-import BarChart from "components/charts/BarChart";
+export default function Analytic({ itemIds, ...props }) {
+  const [loading, setLoading] = useState(true);
+  const [result, setResult] = useState(null);
+  const textColor = useColorModeValue('secondaryGray.900', 'white');
 
-// Custom components
-import Card from "components/card/Card.js";
-import {
-  FoodIntake,
-  ChartOption,
-} from "./variables/charts";
+  useEffect(() => {
+    if (!itemIds || itemIds.length === 0) {
+      setResult([
+        {
+          Calorie: 0,
+          Fat: 0,
+          Sugar: 0,
+          Protein: 0,
+          Carbohydrates: 0,
+          Fiber: 0,
+        },
+      ]);
+      setLoading(false);
+      return;
+    }
 
-// Assets
-import { RiArrowUpSFill } from "react-icons/ri";
+    setLoading(true);
+    axios
+      .post('produk/analytic', { itemIds })
+      .then((res) => {
+        if (res.data && Array.isArray(res.data)) {
+          setResult(res.data);
+        } else {
+          setResult(null);
+        }
+      })
+      .catch((err) => {
+        console.error('Gagal analisis:', err);
+        setResult(null);
+      })
+      .finally(() => setLoading(false));
+  }, [itemIds]);
 
-export default function Analytic(props) {
-  const { ...rest } = props;
+  if (loading) return <Spinner size="xl" />;
 
-  const textColor = useColorModeValue("secondaryGray.900", "white");
+  if (!result) return <Text>Gagal memuat hasil analisa.</Text>;
+
   return (
-    <Card align='center' direction='column' w='100%' {...rest}>
-      <Flex justify='space-between' align='start' px='10px' pt='5px'>
-        <Flex flexDirection='column' align='start' me='20px'>
-          <Flex w='100%'>
-            <Text
-              color='secondaryGray.600'
-              fontSize={{base:"xs", md:"md"}}
-              fontWeight='500'
-              textAlign="start">
-              Estimasi Kandungan Gizi Makro
-            </Text>
-          </Flex>
-          <Flex align='end' >
+    <Card align="center" direction="column" w="100%" {...props}>
+      <Flex justify="space-between" align="start" px="10px" pt="5px" w="100%">
+        <Flex flexDirection="column" align="start" mr="20px">
           <Text
-              mr='4px'
-              color='secondaryGray.600'
-              fontSize={{base:"xs", md:"md"}}
-              fontWeight='500'>
-              Data dari wishlist: 
+            color="secondaryGray.600"
+            fontSize={{ base: 'xs', md: 'md' }}
+            fontWeight="500"
+            textAlign="start"
+          >
+            Estimasi Kandungan Gizi Makro
+          </Text>
+          <Flex align="end" mt={1}>
+            <Text
+              mr="4px"
+              color="secondaryGray.600"
+              fontSize={{ base: 'xs', md: 'md' }}
+              fontWeight="500"
+            >
+              Data dari wishlist:
             </Text>
             <Text
               color={textColor}
-              fontSize={{base:"md", md:"xl"}}
-              fontWeight='700'
-              lineHeight='100%'>
-                 4 Item
+              fontSize={{ base: 'md', md: 'xl' }}
+              fontWeight="700"
+              lineHeight="100%"
+            >
+              {itemIds?.length ?? 0} Item
             </Text>
           </Flex>
         </Flex>
-        <Flex align='center'>
-          <Icon as={RiArrowUpSFill} color='green.500' />
-          <Text color='green.500' fontSize='sm' fontWeight='700'>
-            +2.45%
-          </Text>
-        </Flex>
       </Flex>
-      <Box h='315px' mt='auto'>
-        <BarChart
-          chartData={FoodIntake}
-          chartOptions={ChartOption}
-        />
+      <Box h="315px" mt="auto" w="100%">
+        <BarChart chartData={result} chartOptions={ChartOption} />
       </Box>
     </Card>
-
   );
 }

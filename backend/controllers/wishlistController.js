@@ -5,6 +5,7 @@ const { Op, fn, col } = require("sequelize");
 const sequelize = require("../config/database");
 const { Sequelize } = require("sequelize");
 const Restoran = require("../models/Restoran");
+const Kategori = require("../models/kategori");
 
 exports.getUserWishlist = async (req, res) => {
   try {
@@ -17,6 +18,10 @@ exports.getUserWishlist = async (req, res) => {
         include: {
           model: ItemMakanan,
           attributes: ["id", "caption", "rating", "description", "photo_url"],
+          include: {
+            model: Kategori,
+            attributes: ["id", "nama"],
+          }
         },
       },
     });
@@ -77,6 +82,7 @@ exports.removeFromWishlist = async (req, res) => {
     const userId = req.user.id;
     const { id } = req.params; // 👈 ambil dari params!
 
+    console.log("Item Makanan Id: ", item_makanan_id);
     const wishlist = await Wishlist.findOne({ where: { user_id: userId } });
 
     if (!wishlist) {
@@ -195,3 +201,4 @@ exports.getTotalUMKMWishlistbyUserId = async (req, res) => {
     res.status(500).json({ message: "Gagal mengambil total wishlist" });
   }
 };
+
