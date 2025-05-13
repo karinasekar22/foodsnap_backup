@@ -16,28 +16,43 @@ import {
   Stack,
   Container,
   Center,
+  useToast,
 } from '@chakra-ui/react';
-import { ChevronRightIcon, StarIcon } from '@chakra-ui/icons';
-import { NavLink, useLocation } from 'react-router-dom';
+import { 
+  ChevronRightIcon, 
+  StarIcon, 
+} from '@chakra-ui/icons';
+import { MdBookmark, MdFavorite } from 'react-icons/md';
+import { useLocation } from 'react-router-dom'; // Added for navigation detection
 import axios from '../../../../api/axios';
+import notFoundImage from 'assets/img/homepage/search.png';
 
 const FeaturedReviews = () => {
   const [filter, setFilter] = useState('Discover');
   const [reviewData, setReviewData] = useState([]);
   const [error, setError] = useState(null);
-  const scrollRef = React.useRef(null);
+  const scrollRef = useRef(null);
+  const [bookmarked, setBookmarked] = useState({});
+  const [liked, setLiked] = useState({});
+  const [clickedIcon, setClickedIcon] = useState(null);
+  const toast = useToast();
+  const location = useLocation(); // Hook to detect route changes
+
+  // Placeholder for login state (replace with actual auth logic)
+  const isLoggedIn = false;
 
   const COLORS = {
     primary: '#1DA344',
     text: 'gray.600',
     white: 'white',
     hoverBg: 'gray.50',
+    heartRed: '#E53E3E',
   };
 
   const fetchReviews = async () => {
     try {
       console.log('Mengambil data dari:', axios.defaults.baseURL + '/produk/item-makanan');
-      const response = await axios.get('/produk/item-makanan'); // Hapus /api
+      const response = await axios.get('/produk/item-makanan');
       console.log('Data dari API:', response.data);
       const transformedData = response.data.map((item) => ({
         id: item.id,
@@ -49,19 +64,31 @@ const FeaturedReviews = () => {
           avatar: '/api/placeholder/40/40',
         },
         content: 'This is a dummy review content.',
+        likes: Math.floor(Math.random() * 100) + 1,
       }));
       setReviewData(transformedData);
       setError(null);
     } catch (error) {
       console.error('Gagal mengambil data dari API:', error);
       console.error('Error detail:', error.response?.status, error.response?.data);
-      setError('Gagal memuat data. Pastikan server backend berjalan dan CORS dikonfigurasi.');
+      setError('Gagal memuat data.');
     }
   };
 
   useEffect(() => {
     fetchReviews();
   }, []);
+
+  // Close toasts on route change or component unmount
+  useEffect(() => {
+    // Close all toasts when the pathname changes
+    toast.closeAll();
+    
+    // Cleanup on component unmount
+    return () => {
+      toast.closeAll();
+    };
+  }, [location.pathname, toast]);
 
   const filters = [
     'Discover',
@@ -93,8 +120,67 @@ const FeaturedReviews = () => {
     }
   };
 
+  const handleBookmarkToggle = (id) => {
+    try {
+      // Check if user is logged in
+      if (!isLoggedIn) {
+        toast({
+          title: 'Failed to save review.',
+          description: 'You might need to log in to use this feature.',
+          status: 'error',
+          duration: 3000, // Reduced from 5000ms
+          isClosable: true,
+        });
+        return;
+      }
+
+      // Simulate API call or action to save bookmark
+      setBookmarked((prev) => ({
+        ...prev,
+        [id]: !prev[id],
+      }));
+      setClickedIcon(`bookmark-${id}`);
+      setTimeout(() => setClickedIcon(null), 300);
+
+      // Show success toast
+      toast({
+        title: 'Successfully saved review.',
+        status: 'success',
+        duration: 2000, // Reduced from 3000ms
+        isClosable: true,
+      });
+    } catch (error) {
+      // Show error toast for general failure
+      toast({
+        title: 'Failed to save review.',
+        description: 'Please check your internet connection and try again.',
+        status: 'error',
+        duration: 3000, // Reduced from 5000ms
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleLikeToggle = (id) => {
+    setLiked((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+    setClickedIcon(`like-${id}`);
+    setTimeout(() => setClickedIcon(null), 300);
+  };
+
+  const popOutAnimation = `
+    @keyframes popOut {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+  `;
+
   return (
     <Box py={16} px={{ base: 4, md: 12 }} bg="gray.50">
+      <style>{popOutAnimation}</style>
       <Heading color="#1DA344" mb={4}>
         FoodSnap{' '}
         <Box as="span" color="black">
@@ -107,8 +193,6 @@ const FeaturedReviews = () => {
         Discover real reviews, trusted ratings, and delicious stories shared by
         our community.
       </Text>
-
-      {error && <Text color="red.500">{error}</Text>}
 
       <Flex align="center" w="100%" position="relative" mt={10} mb={8}>
         <Flex
@@ -157,12 +241,63 @@ const FeaturedReviews = () => {
         />
       </Flex>
 
+      {error && (
+        <Center flexDirection="column" py={8}>
+          <Image
+            src={notFoundImage}
+            alt="Error fetching data"
+            boxSize="380px"
+            mb={4}
+            fallbackSrc="https://via.placeholder.com/150"
+          />
+          <Heading
+            as="h3"
+            size="xl"
+            color="gray.700"
+            textAlign="center"
+          >
+            Oops! Something went wrong while loading the reviews.
+          </Heading>
+        </Center>
+      )}
+
       <Grid
         templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }}
         gap={6}
       >
         {reviewData.map((review) => (
-          <Card key={review.id} overflow="hidden" variant="outline">
+          <Card key={review.id} overflow="hidden" variant="outline" position="relative">
+            <Box
+              position="absolute"
+              top={3}
+              right={3}
+              zIndex={2}
+              onClick={() => handleBookmarkToggle(review.id)}
+              cursor="pointer"
+              transition="all 0.3s ease-in-out"
+              borderRadius="full"
+              width="32px"
+              height="32px"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              bg={bookmarked[review.id] ? "white" : "#1DA344"}
+              border={bookmarked[review.id] ? "1px solid #1DA344" : "none"}
+              _hover={{
+                transform: 'scale(1.2)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+              }}
+              sx={{
+                animation: clickedIcon === `bookmark-${review.id}` ? 'popOut 0.3s ease-in-out' : 'none',
+              }}
+            >
+              <MdBookmark 
+                size="18px" 
+                color={bookmarked[review.id] ? "#1DA344" : "white"} 
+                style={{ transition: "all 0.3s ease-in-out" }}
+              />
+            </Box>
+            
             <Image
               src={review.image}
               alt={review.title}
@@ -182,6 +317,7 @@ const FeaturedReviews = () => {
                   name={review.user.name}
                   size="xs"
                   mr={2}
+                  bg="green.500"
                 />
                 <Text fontSize="sm" fontWeight="medium">
                   {review.user.name}
@@ -213,16 +349,38 @@ const FeaturedReviews = () => {
                 >
                   Read All
                 </Button>
-                <IconButton
-                  aria-label="Like"
-                  size="sm"
-                  isRound
-                  bg="#1DA344"
-                  color="white"
-                  _hover={{ bg: '#17833A' }}
-                >
-                  Like
-                </IconButton>
+                
+                <HStack>
+                  <Text fontSize="sm" color="gray.500" mr={1}>
+                    {review.likes}+
+                  </Text>
+                  <Box
+                    onClick={() => handleLikeToggle(review.id)}
+                    cursor="pointer"
+                    transition="all 0.3s ease-in-out"
+                    borderRadius="full"
+                    width="32px"
+                    height="32px"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    bg={liked[review.id] ? "white" : "#1DA344"}
+                    border={liked[review.id] ? "1px solid #1DA344" : "none"}
+                    _hover={{
+                      transform: 'scale(1.2)',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    }}
+                    sx={{
+                      animation: clickedIcon === `like-${review.id}` ? 'popOut 0.3s ease-in-out' : 'none',
+                    }}
+                  >
+                    <MdFavorite 
+                      size="18px" 
+                      color={liked[review.id] ? COLORS.heartRed : "white"} 
+                      style={{ transition: "all 0.3s ease-in-out" }}
+                    />
+                  </Box>
+                </HStack>
               </Flex>
             </CardFooter>
           </Card>
@@ -231,8 +389,6 @@ const FeaturedReviews = () => {
 
       <Flex justifyContent="center" width="100%" mt={8}>
         <Button
-          as={NavLink}
-          to="/user/discover"
           variant="outline"
           borderRadius="full"
           borderColor="#1DA344"
@@ -252,6 +408,7 @@ const FeaturedReviews = () => {
           }}
           transition="all 0.3s ease-in-out"
           fontFamily="Poppins, sans-serif"
+          onClick={() => console.log("Discover more clicked")}
         >
           Discover More
         </Button>

@@ -19,7 +19,7 @@ const PageNotFound = () => {
         <Image
           src={notFoundImage}
           alt="404 Not Found"
-          maxW={{ base: '500px', md: '550px' }}
+          maxW={{ base: '500px', md: '550px', sm: '270px', }}
           objectFit="contain"
           mb={2}
         />

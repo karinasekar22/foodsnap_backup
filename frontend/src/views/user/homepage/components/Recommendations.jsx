@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Button, Heading, Text, Grid, GridItem, Image, Center } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom'; // Impor useNavigate
+import { useNavigate } from 'react-router-dom'; 
 
 import topPicksImage from 'assets/img/homepage/top-picks.jpg';
 import localRestaurantsImage from 'assets/img/homepage/favorite-local.jpg';
@@ -17,8 +17,8 @@ const Recommendations = () => {
       // Jika sudah login, arahkan ke path yang sesuai
       navigate(path);
     } else {
-      // Jika belum login, arahkan ke halaman sign-in
-      navigate('/auth/sign-in');
+      // Jika belum login, arahkan ke halaman not found
+      navigate('/user/not-found');
     }
   };
 
