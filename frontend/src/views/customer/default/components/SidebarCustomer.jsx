@@ -37,7 +37,7 @@ const SidebarCustomer = () => {
       spacing={6}
       p={4}
       bg="white"
-      h="100vh"
+      h="auto"
       w="220px"
       align="flex-start"
       borderRight="1px solid #e2e8f0"
