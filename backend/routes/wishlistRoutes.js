@@ -31,4 +31,6 @@ router.get('/top_item', verifyToken, wishlistController.getTopWishlist);
 
 router.get('/total-wishlist', verifyToken, wishlistController.getTotalUMKMWishlistbyUserId);
 
+
+
 module.exports = router;

@@ -16,6 +16,8 @@ const OwnerDashboard = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [items, setItems] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [setTopUser, setTopUsers] = useState([]);
+
   const [user, setUser] = useState(null);
   const [dateRange, setDateRange] = useState({
     startDate: new Date(),
@@ -25,17 +27,21 @@ const OwnerDashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [dashboardRes, itemsRes, restoranRes, wishlishtRes] = await Promise.all([
+        const [dashboardRes, itemsRes, restoranRes, wishlishtRes,totalTopUser] = await Promise.all([
           axiosInstance.get('auth/umkm/dashboard'),
           axiosInstance.get('produk/item-makanan/user'),
           axiosInstance.get('restoran'),
           axiosInstance.get('wishlist/total-wishlist'),
+          axiosInstance.get('comments-detail/top/review'),
+
         ]);
 
         setUser(dashboardRes.data);
         setItems(itemsRes.data);
         setRestaurants(restoranRes.data);
         setWishlist(wishlishtRes.data);
+        setTopUsers(totalTopUser.data.data);
+
         console.log(wishlishtRes.data);
         console.log('Welcome Owner:', dashboardRes.data);
       } catch (error) {
@@ -64,8 +70,7 @@ const OwnerDashboard = () => {
         <VStack spacing={4} w="100%">
           <AnalyticOwner dateRange={dateRange} />
           <TopReviews
-            tableData={tableDataTopCreators}
-            columnsData={tableColumnsTopCreators}
+            tableData={setTopUser}
           />
         </VStack>
 

@@ -77,6 +77,73 @@ exports.addToWishlist = async (req, res) => {
   }
 };
 
+/**
+ * This Fungsi Untuk Grafik Wishlist By Restoran
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.getWishlistByRestoran = async (req, res) => {
+  const { startDate, endDate } = req.query;
+  const userId = req.user?.id;
+
+  try {
+    const data = await WishlistFood.findAll({
+      include: [
+        {
+          model: Wishlist,
+          attributes: [],
+          where: {
+            created_at: {
+              [Op.between]: [startDate, endDate],
+            },
+          },
+        },
+        {
+          model: ItemMakanan,
+          attributes: [],
+          include: [
+            {
+              model: Restoran,
+              attributes: ['nama_restoran'],
+              where: {
+                user_id: userId,
+              },
+            },
+          ],
+        },
+      ],
+      attributes: [
+        [Sequelize.col('ItemMakanan.Restoran.nama_restoran'), 'nama_restoran'],
+        [Sequelize.fn('DATE', Sequelize.col('Wishlist.created_at')), 'date'],
+        [Sequelize.fn('COUNT', Sequelize.col('WishlistFood.id')), 'total'],
+      ],
+      group: [
+        'ItemMakanan.Restoran.nama_restoran',
+        Sequelize.fn('DATE', Sequelize.col('Wishlist.created_at')),
+      ],
+      raw: true,
+    });
+
+    // Format hasil ke bentuk grafik (e.g., ApexCharts / Chart.js)
+    const grouped = {};
+    data.forEach(({ nama_restoran, date, total }) => {
+      if (!grouped[nama_restoran]) grouped[nama_restoran] = [];
+      grouped[nama_restoran].push({ x: date, y: Number(total) });
+    });
+
+    const formatted = Object.entries(grouped).map(([name, data]) => ({
+      name,
+      data,
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    console.error('Error getWishlistByRestoran:', error);
+    res.status(500).json({ message: 'Gagal mengambil data wishlist per restoran' });
+  }
+};
+
+
 exports.removeFromWishlist = async (req, res) => {
   try {
     const userId = req.user.id;

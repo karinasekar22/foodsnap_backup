@@ -1,7 +1,55 @@
 const CommentDetail = require('../models/CommentDetail');
 const Comment = require('../models/Comment');
 const User = require('../models/User');
+const ItemMakanan = require('../models/ItemMakanan'); // Jika ingin info makanan juga
+const { Sequelize } = require('sequelize');
 
+
+
+
+
+/**
+ * [GET] Top 3 komentar dengan jumlah review terbanyak
+ */
+exports.getTopCommentDetails = async (req, res) => {
+  try {
+    const topComments = await CommentDetail.findAll({
+      attributes: [
+        'comment_id',
+        [Sequelize.fn('COUNT', Sequelize.col('comment_id')), 'total_reviews']
+      ],
+      group: ['comment_id', 'Comment.id', 'Comment->User.id', 'Comment->ItemMakanan.id'],
+      order: [[Sequelize.literal('total_reviews'), 'DESC']],
+      limit: 3,
+      include: [
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ['id', 'username', 'email']
+            },
+            {
+              model: ItemMakanan,
+              attributes: ['id', 'caption', 'description']
+            }
+          ]
+        }
+      ]
+    });
+
+    res.status(200).json({
+      message: 'Top 3 komentar dengan jumlah review terbanyak berhasil diambil',
+      data: topComments
+    });
+  } catch (error) {
+    console.error('Gagal mengambil top komentar:', error);
+    res.status(500).json({
+      message: 'Gagal mengambil top komentar dengan review terbanyak',
+      error: error.message
+    });
+  }
+};
 /**
  * [GET] Mengambil semua detail komentar yang termasuk:
  * - Komentar utamanya
@@ -123,7 +171,6 @@ exports.getAverageRating = async (req, res) => {
     try {
       const { id: comment_id } = req.params;
   
-      const { Sequelize } = require('sequelize');
       const avgData = await CommentDetail.findOne({
         where: { comment_id },
         attributes: [
