@@ -1,22 +1,15 @@
 import React from 'react';
-import { Box, IconButton, Flex } from '@chakra-ui/react';
-import { ArrowBackIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
+import { Box } from '@chakra-ui/react';
 
 import Navbar from './components/Navbar'; 
 import Reviews from './components/ListReviews';
 import Options from './components/Options';
 import BackButton from './components/BackButton';
 
-const DiscoverPage = () => {
-  const navigate = useNavigate();
-
+const Categories = () => {
   return (
     <Box>
- 
-
       <Navbar /> 
-      {/* Tombol Back */}
       <BackButton/>
       <Reviews />
       <Options />
@@ -24,4 +17,4 @@ const DiscoverPage = () => {
   );
 };
 
-export default DiscoverPage;
+export default Categories;

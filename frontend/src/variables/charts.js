@@ -208,6 +208,7 @@ export const barChartOptionsConsumption = {
   },
 };
 
+
 export const pieChartOptions = {
   labels: ["Your files", "System", "Empty"],
   colors: ["#4318FF", "#6AD2FF", "#EFF4FB"],
