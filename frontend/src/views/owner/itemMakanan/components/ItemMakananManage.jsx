@@ -54,12 +54,17 @@ const ItemMakananManage = () => {
     kategori_id: "",
     photo: null,
   });
+
+    const [activeRestaurant, setActiveRestaurant] = useState(() => {
+      const saved = sessionStorage.getItem("active_restaurant");
+      return saved ? JSON.parse(saved) : null;
+    });
   const [editId, setEditId] = useState(null);
 
   const API_URL = `${process.env.REACT_APP_API_BACKEND}/api/produk/`;
 
   //Display Restoran Masih Hardcode 
-  const display_API = `${process.env.REACT_APP_API_BACKEND}/api/produk/restoran/3`;
+  const display_API = `${process.env.REACT_APP_API_BACKEND}/api/produk/restoran/${activeRestaurant.id}`;
 
 
   const fetchKategori = async () => {

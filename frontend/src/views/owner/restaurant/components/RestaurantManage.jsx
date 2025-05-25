@@ -29,6 +29,7 @@ import {
 import { AddIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import Card from "components/card/Card";
 import axios from "api/axios";
+
 const RestaurantManage = () => {
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const tableBg = useColorModeValue("white", "gray.700");
@@ -37,8 +38,13 @@ const RestaurantManage = () => {
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ restaurant_name: "", business_info: "" , ppn : 0, discount : 0});
+  const [form, setForm] = useState({ restaurant_name: "", business_info: "", ppn: 0, discount: 0 });
   const [editId, setEditId] = useState(null);
+
+  const [activeRestaurant, setActiveRestaurant] = useState(() => {
+    const saved = sessionStorage.getItem("active_restaurant");
+    return saved ? JSON.parse(saved) : null;
+  });
 
   const API_URL = `${process.env.REACT_APP_API_BACKEND}/api/restoran/`;
 
@@ -70,7 +76,7 @@ const RestaurantManage = () => {
         await axios.post(API_URL, form);
         toast({ title: "Data berhasil ditambahkan", status: "success", isClosable: true });
       }
-      setForm({ restaurant_name: "", business_info: "" , ppn : 0, discount : 0  });
+      setForm({ restaurant_name: "", business_info: "", ppn: 0, discount: 0 });
       setEditId(null);
       onClose();
       fetchData();
@@ -81,7 +87,12 @@ const RestaurantManage = () => {
   };
 
   const handleEdit = (item) => {
-    setForm({ restaurant_name: item.restaurant_name, business_info: item.business_info, ppn : item.ppn , discount : item.discount});
+    setForm({
+      restaurant_name: item.restaurant_name,
+      business_info: item.business_info,
+      ppn: item.ppn,
+      discount: item.discount,
+    });
     setEditId(item.id);
     onOpen();
   };
@@ -97,19 +108,43 @@ const RestaurantManage = () => {
     }
   };
 
+  const handleSetActive = (restaurant) => {
+    sessionStorage.setItem("active_restaurant", JSON.stringify(restaurant));
+    setActiveRestaurant(restaurant);
+    toast({ title: "Restoran aktif diset", status: "info", isClosable: true });
+  };
+
   return (
     <Card p={4} w="100%">
       <Flex justify="space-between" align="center" mb={4}>
         <Text fontSize="xl" fontWeight="bold" color={textColor}>
           Data Restoran
         </Text>
-        <Button leftIcon={<AddIcon />} colorScheme="blue" onClick={() => { setEditId(null); setForm({ restaurant_name: "", business_info: "" }); onOpen(); }}>
+        <Button
+          leftIcon={<AddIcon />}
+          colorScheme="blue"
+          onClick={() => {
+            setEditId(null);
+            setForm({ restaurant_name: "", business_info: "", ppn: 0, discount: 0 });
+            onOpen();
+          }}
+        >
           Tambah Data
         </Button>
       </Flex>
 
+      {activeRestaurant && (
+        <Box mb={4} p={3} bg="blue.50" borderRadius="md">
+          <Text color="blue.800">
+            Restoran Aktif: <strong>{activeRestaurant.restaurant_name}</strong>
+          </Text>
+        </Box>
+      )}
+
       {loading ? (
-        <Flex justify="center" align="center" py={10}><Spinner size="xl" /></Flex>
+        <Flex justify="center" align="center" py={10}>
+          <Spinner size="xl" />
+        </Flex>
       ) : (
         <Box overflowX="auto">
           <Table variant="simple" bg={tableBg}>
@@ -117,8 +152,11 @@ const RestaurantManage = () => {
               <Tr>
                 <Th>No</Th>
                 <Th>Nama Restoran</Th>
-                <Th>Deskripsi </Th>
+                <Th>Deskripsi</Th>
+                <Th>PPN</Th>
+                <Th>Diskon</Th>
                 <Th>Aksi</Th>
+                <Th>Aktif</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -127,6 +165,8 @@ const RestaurantManage = () => {
                   <Td>{index + 1}</Td>
                   <Td>{item.restaurant_name}</Td>
                   <Td>{item.business_info}</Td>
+                  <Td>{item.ppn}%</Td>
+                  <Td>{item.discount}%</Td>
                   <Td>
                     <IconButton
                       aria-label="Edit"
@@ -142,6 +182,15 @@ const RestaurantManage = () => {
                       size="sm"
                       colorScheme="red"
                       onClick={() => handleDelete(item.id)}
+                    />
+                  </Td>
+                  <Td>
+                    <IconButton
+                      aria-label="Set Aktif"
+                      icon={<AddIcon />}
+                      size="sm"
+                      colorScheme="green"
+                      onClick={() => handleSetActive(item)}
                     />
                   </Td>
                 </Tr>
@@ -163,17 +212,16 @@ const RestaurantManage = () => {
               <Input name="restaurant_name" value={form.restaurant_name} onChange={handleInputChange} />
             </FormControl>
             <FormControl>
-              <FormLabel>Deskripsi </FormLabel>
+              <FormLabel>Deskripsi</FormLabel>
               <Input name="business_info" value={form.business_info} onChange={handleInputChange} />
             </FormControl>
             <FormControl>
-              <FormLabel>PPN (Persentase %) </FormLabel>
-              <Input name="ppn" value={form.ppn} onChange={handleInputChange} />
+              <FormLabel>PPN (Persentase %)</FormLabel>
+              <Input name="ppn" type="number" value={form.ppn} onChange={handleInputChange} />
             </FormControl>
-
             <FormControl>
-              <FormLabel>Discount  (Persentase %) </FormLabel>
-              <Input name="discount" value={form.discount} onChange={handleInputChange} />
+              <FormLabel>Diskon (Persentase %)</FormLabel>
+              <Input name="discount" type="number" value={form.discount} onChange={handleInputChange} />
             </FormControl>
           </ModalBody>
           <ModalFooter>
