@@ -299,7 +299,7 @@ const FeaturedReviews = () => {
             </Box>
             
             <Image
-              src={review.image}
+              src={`${process.env.REACT_APP_API_BACKEND}${review.image}`}
               alt={review.title}
               objectFit="cover"
               height="200px"

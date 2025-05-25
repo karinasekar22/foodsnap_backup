@@ -5,7 +5,7 @@ import axiosInstance from 'api/axios';
 import ReportCard from './report_card/ReportCard';
 import Calendar from './CalendarOwner';
 import AnalyticOwner from './analytic/AnalyticOwner';
-import DailyTraffic from './DailyTrafficOwner';
+
 import TopReviews from './TopReviews';
 
 import tableDataTopCreators from './variables/tableDataTopCreators.json';
@@ -76,7 +76,6 @@ const OwnerDashboard = () => {
 
         <VStack spacing={4} w={{ base: '100%', md: 'auto' }}>
           <Calendar dateRange={dateRange} setDateRange={setDateRange} />
-          <DailyTraffic />
         </VStack>
       </HStack>
     </Box>

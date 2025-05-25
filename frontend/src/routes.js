@@ -9,6 +9,7 @@ import {
   MdOutlineShoppingCart,
   MdStoreMallDirectory,
   MdRiceBowl,
+  MdGroup,
 } from 'react-icons/md';
 
 // Admin Imports
@@ -37,6 +38,7 @@ import CustomerCategoryPage from 'views/customer/default/components/CustomerCate
 import CustomerWishlistPage from 'views/customer/default/components/CustomerWishlistPage';
 import ManageRestorant from 'views/owner/restaurant';
 import ManageItemFood from 'views/owner/itemMakanan';
+import VisitorReports from 'views/owner/visitors';
 
 // page not found
 import PageNotFound from 'views/not-found/PageNotFound';
@@ -183,6 +185,14 @@ const routes = [
     path: '/products',
     icon: <Icon as={MdRiceBowl} width="20px" height="20px" color="inherit" />,
     component: <ManageItemFood />,
+  },
+
+    {
+    name: 'Visitor report',
+    layout: '/owner',
+    path: '/visitors',
+    icon: <Icon as={MdGroup} width="20px" height="20px" color="inherit" />,
+    component: <VisitorReports />,
   },
 
   {
