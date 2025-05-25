@@ -28,4 +28,8 @@ router.delete('/:id', verifyToken, commentDetailController.deleteCommentDetail);
  */
 router.get('/average-rating/:id', verifyToken, commentDetailController.getAverageRating);
 
+
+// 🔥 Route baru: Top 3 komentar dengan review terbanyak
+router.get('/top/review',verifyToken , commentDetailController.getTopCommentDetails);
+
 module.exports = router;
