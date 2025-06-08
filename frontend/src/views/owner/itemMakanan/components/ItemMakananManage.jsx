@@ -196,7 +196,6 @@ const ItemMakananManage = () => {
               <Tr>
                 <Th>No</Th>
                 <Th>Caption</Th>
-                <Th>description</Th>
                 <Th>Rating</Th>
                 <Th>Aktif</Th>
                 <Th>Aksi</Th>

@@ -189,9 +189,11 @@ const Navbar = () => {
 
   // Mengambil parameter pencarian dari URL
   const queryParams = new URLSearchParams(location.search);
-  const searchQuery = queryParams.get('query') || '';
-  const selectedLocation = queryParams.get('location') || 'Bandung';
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('Bandung');
+  const [searchResults, setSearchResults] = useState([]);
 
+ 
   // Fungsi untuk menangani logout
   const handleLogout = () => {
     sessionStorage.removeItem('user');
@@ -207,9 +209,23 @@ const Navbar = () => {
   };
 
   // Fungsi untuk memperbarui pencarian
-  const handleSearchChange = (e) => {
-    navigate(`/user/discoverpage?query=${encodeURIComponent(e.target.value)}&location=${encodeURIComponent(selectedLocation)}`);
+ const handleSearchChange = async (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_BACKEND}/api/produk/search`, {
+        params: {
+          search: value,
+        },
+      });
+      setSearchResults(response.data.products || []);
+    } catch (err) {
+      console.error('Gagal mencari produk:', err);
+      setSearchResults([]);
+    }
   };
+
 
   // Fungsi untuk memperbarui lokasi
   const handleLocationChange = (e) => {
@@ -292,6 +308,7 @@ const Navbar = () => {
         onSearchChange={handleSearchChange}
         onLocationChange={handleLocationChange}
       />
+
 
       {/* Ikon notifikasi dan profil */}
       <Flex align="center" gap="12px">
@@ -437,6 +454,40 @@ const Navbar = () => {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
+
+      {searchQuery && searchResults.length > 0 && (
+  <Box
+    position="absolute"
+    top="60px" // sesuaikan dengan tinggi navbar + margin
+    bg="white"
+    boxShadow="md"
+    borderRadius="md"
+    width={{ base: '100%', md: '60%' }}
+    maxHeight="300px"
+    overflowY="auto"
+    zIndex={1500}
+  >
+    {searchResults.map((item) => (
+      <Box
+        key={item.id}
+        px={4}
+        py={2}
+        borderBottom="1px solid"
+        borderColor="gray.200"
+        cursor="pointer"
+        _hover={{ bg: 'gray.100' }}
+        onClick={() => {
+          navigate(`/produk/${item.id}`);
+          setSearchQuery('');
+          setSearchResults([]);
+        }}
+      >
+        <Text fontWeight="semibold">{item.name}</Text>
+        <Text fontSize="sm" color="gray.500">{item.description?.slice(0, 50)}...</Text>
+      </Box>
+    ))}
+  </Box>
+)}
     </Flex>
   );
 };
