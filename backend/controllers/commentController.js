@@ -4,7 +4,7 @@ const User = require('../models/User');
 const CommentDetail = require('../models/CommentDetail');
 const sequelize = require('../config/database');
 const Kategori = require('../models/kategori');
-
+const Restoran = require('../models/Restoran');
 
 /**
  * [POST] Buat komentar pertama kali
@@ -216,3 +216,74 @@ exports.getKomentarByItemId = async (req, res) => {
   }
 };
 
+
+exports.getCommentByUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const comments = await Comment.findAll({
+  attributes: ['id', 'content', 'created_at'],
+  include: [
+    {
+      model: User,
+      attributes: ['id', 'username', 'email'],
+    },
+    {
+      model: ItemMakanan,
+      attributes: ['id', 'caption', 'description'],
+      include: [
+        {
+          model: Restoran,
+          attributes: ['id', 'restaurant_name', 'user_id'],
+          where: { user_id: userId }, // filter berdasarkan pemilik restoran
+        },
+      ],
+    },
+  ],
+  order: [['created_at', 'DESC']],
+});
+    res.status(200).json({
+      data: comments,
+    });
+  } catch (error) {
+    console.error('Gagal mengambil komentar user:', error);
+    res.status(500).json({
+      message: 'Gagal mengambil komentar user',
+      error: error.message,
+    });
+  }
+};
+
+
+exports.getCommentByItemId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ message: 'Item ID tidak boleh kosong' });
+
+    const commentDetails = await Comment.findAll({
+      where: { item_makanan_id: id },
+      attributes: ['content', 'created_at'], // tambah createdAt kalau mau sorting
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'username', 'email'],
+        },
+        {
+          model: ItemMakanan,
+          attributes: ['id', 'caption'], // buang description kalau nggak dibutuhkan
+        },
+      ],
+      order: [['created_at', 'DESC']], // urutkan dari komentar terbaru
+    });
+
+    res.status(200).json({
+      data: commentDetails,
+    });
+  } catch (error) {
+    console.error('Gagal mengambil komentar user:', error);
+    res.status(500).json({
+      message: 'Gagal mengambil komentar user',
+      error: error.message,
+    });
+  }
+};

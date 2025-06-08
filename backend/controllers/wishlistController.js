@@ -257,9 +257,18 @@ exports.getTotalUMKMWishlistbyUserId = async (req, res) => {
         },
       },
     });
+    
+    let totalWishlistFood = 0;
+
+    wishlist.forEach((w) => {
+      const count = w.WishlistFoods.filter(
+        (wf) => wf.ItemMakanan && wf.ItemMakanan.Restoran
+      ).length;
+      totalWishlistFood += count;
+    });
 
     res.status(200).json({
-      total: wishlist.length,
+      total: totalWishlistFood,
       data: wishlist,
     });
   } catch (error) {

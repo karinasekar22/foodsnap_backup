@@ -17,6 +17,9 @@ router.post('/', verifyToken, commentController.createComment);
  */
 router.get('/', verifyToken, commentController.getAllComments);
 
+router.get('/comments', verifyToken, commentController.getCommentByUser);
+router.get('/comments/item/:id', verifyToken, commentController.getCommentByItemId);
+
 /**
  * [GET] Ambil komentar berdasarkan ID
  */

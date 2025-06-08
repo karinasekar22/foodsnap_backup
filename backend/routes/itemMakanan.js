@@ -18,7 +18,7 @@ router.get('/item-makanan/user', verifyToken, itemController.getTotalMakananByUs
 
 router.get('/restoran/:restoran_id', itemController.getItemsByRestoran);
 
-
+router.get('/item-makanan-user/', verifyToken, itemController.getNamaMakananByUserId);
 // Get data Detail Item Makanan 
 
 router.get('/itemMakananDetail/:id' , itemController.getItemMakananDetail);

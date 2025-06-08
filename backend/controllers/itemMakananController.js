@@ -346,3 +346,29 @@ exports.getKategoribyIMId = async (req, res) => {
     res.status(500).json({ message: "Gagal menghitung pie chart" });
   }
 };
+
+exports.getNamaMakananByUserId = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const items = await ItemMakanan.findAll({
+      attributes: ['id', 'caption'], // ambil hanya id dan nama_produk
+      include: [
+        {
+          model: Restoran,
+          where: { user_id: userId },
+          attributes: [], // tidak perlu ambil field dari restoran
+        },
+      ],
+    });
+
+    const totalItems = items.length;
+
+    res.status(200).json({
+      items, // kirim data item-nya juga
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Gagal mengambil total item makanan" });
+  }
+};

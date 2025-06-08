@@ -48,7 +48,7 @@ const VisitorReports = () => {
       try {
         let res;
         if (selectedRestoranId === 'all') {
-          res = await axios.get('produk/item-makanan-user/');
+          res = await axios.get('produk/item-makanan-user');
           setItems(res.data.items);
         } else {
           res = await axios.get(`produk/restoran/:restoran_id/${selectedRestoranId}`);
