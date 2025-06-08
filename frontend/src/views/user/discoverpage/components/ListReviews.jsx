@@ -17,9 +17,11 @@ import {
   Container,
   Center,
   Spinner,
+  useToast
 } from '@chakra-ui/react';
 import { ChevronRightIcon, StarIcon } from '@chakra-ui/icons';
 import { NavLink, useLocation } from 'react-router-dom';
+import { FaStar, FaHeart, FaBookmark } from 'react-icons/fa';
 import axios from '../../../../api/axios';
 
 // Konstanta untuk nilai yang sering digunakan
@@ -56,7 +58,7 @@ const RatingStars = memo(({ rating }) => (
 ));
 
 // Komponen untuk kartu review
-const ReviewCard = memo(({ review }) => (
+const ReviewCard = memo(({ review, isWishlisted, onWishlist }) => (
   // Kartu untuk menampilkan satu review
   <Card overflow="hidden" variant="outline">
     <Image
@@ -84,6 +86,8 @@ const ReviewCard = memo(({ review }) => (
     <CardFooter pt={0}>
       <Flex justify="space-between" width="100%" align="center">
         <Button
+          as={NavLink}
+          to={`/customer/produk/${review.id}`} // ⬅️ Navigasi ke halaman detail produk
           variant="solid"
           size="sm"
           width="85px"
@@ -102,15 +106,16 @@ const ReviewCard = memo(({ review }) => (
           Read All
         </Button>
         <IconButton
-          aria-label="Like"
+          aria-label="Wishlist"
+          icon={<FaHeart />}
           size="sm"
           isRound
-          bg={COLORS.primary}
+          onClick={onWishlist}
+          bg={isWishlisted ? 'red.500' : COLORS.primary}
           color={COLORS.white}
-          _hover={{ bg: '#17833A' }}
-        >
-          Like
-        </IconButton>
+          _hover={{ bg: isWishlisted ? 'red.600' : '#17833A' }}
+        />
+
       </Flex>
     </CardFooter>
   </Card>
@@ -172,11 +177,39 @@ const FeaturedReviews = () => {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef(null);
   const location = useLocation();
+  const [wishlist, setWishlist] = useState([]);
+
+    const toast = useToast();
+  
+
 
   // Mengambil parameter pencarian dari URL
   const queryParams = new URLSearchParams(location.search);
   const searchQuery = queryParams.get('query') || CONFIG.defaultQuery;
   const selectedLocation = queryParams.get('location') || CONFIG.defaultLocation;
+
+  const handleWishlist = async (userId,productId) => {
+    try {
+      await axios.post('/wishlist/add', { user_id:userId,item_makanan_id: productId });
+      toast({
+        title: 'Berhasil!',
+        description: 'Item ditambahkan ke wishlist.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      setWishlist((prev) => [...prev, productId]);
+    } catch (error) {
+      console.error('Gagal menambahkan ke wishlist:', error);
+        toast({
+        title: 'Error!',
+        description: error.response.data.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   // Fungsi untuk mengambil data review dari API
   const fetchReviews = async () => {
@@ -259,7 +292,15 @@ const FeaturedReviews = () => {
       {reviewData.length > 0 ? (
         <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }} gap={6}>
           {reviewData.map((review) => (
-            <ReviewCard key={review.id} review={review} />
+            <ReviewCard
+              key={review.id}
+              review={review}
+              isWishlisted={wishlist.includes(review.id)}
+              onWishlist={() => 
+                // console.log("Review ", review)
+                handleWishlist(review.user.id, review.id)
+              }
+            />
           ))}
         </Grid>
       ) : (

@@ -86,41 +86,51 @@ exports.getAllCommentDetails = async (req, res) => {
 /**
  * [POST] Menambahkan interaksi user terhadap sebuah komentar:
  * - Berupa rating (1-5)
- * - Harus ada comment_id valid
+ * - Harus ada comment_id valid createCommentDetail
  */
 exports.createCommentDetail = async (req, res) => {
-  try {
-    const { comment_id, rating, user_id } = req.body;
-    // const user_id = req.user.id; // dari verifyToken
+  const { comment_id, comment_detail } = req.body;
+  const user_id = req.user.id;
 
-    console.log("Id ", user_id);
-    // Validasi komentar ada
-    const comment = await Comment.findByPk(comment_id);
+  try {
+    if (req.user.role !== 'umkm') {
+      return res.status(403).json({ message: 'Hanya UMKM yang bisa membalas komentar' });
+    }
+
+    const comment = await Comment.findOne({
+      where: { id: comment_id },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'role']
+        }
+      ]
+    });
+
     if (!comment) {
       return res.status(404).json({ message: 'Komentar tidak ditemukan' });
     }
 
-    // // Cek apakah user sudah memberi detail sebelumnya → jika ya, tolak
-    // const existing = await CommentDetail.findOne({
-    //   where: { comment_id, user_id }
-    // });
-    // if (existing) {
-    //   return res.status(409).json({ message: 'Kamu sudah memberi rating untuk komentar ini' });
-    // }
-
-    // Validasi rating jika dikirimkan
-    if (rating && (rating < 1 || rating > 5)) {
-      return res.status(400).json({ message: 'Rating harus antara 1 dan 5' });
+    if (comment.User.role !== 'customer') {
+      return res.status(400).json({ message: 'Hanya bisa membalas komentar dari customer' });
     }
 
-    const detail = await CommentDetail.create({ comment_id, user_id, rating });
+    const newCommentDetail = await CommentDetail.create({
+      comment_id,
+      comment_detail,
+      user_id
+    });
 
-    res.status(201).json({ message: 'Berhasil memberi interaksi ke komentar', detail });
-  } catch (error) {
-    console.error("Message Error",error);
-    res.status(500).json({ message: 'Gagal menyimpan detail komentar' });
+    res.status(201).json({
+      message: 'Balasan berhasil dibuat',
+      data: newCommentDetail
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Gagal membuat balasan komentar' });
   }
 };
+
 
 /**
  * [GET] Mengambil semua detail untuk satu komentar (berdasarkan comment_id)
